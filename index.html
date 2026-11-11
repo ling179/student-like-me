@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Student Like Me">
+<meta name="theme-color" content="#121E3A">
+<link rel="apple-touch-icon" href="icon.png">
+<title>Student Like Me</title>
+<style>
+:root{--navy:#121E3A;--navy2:#1E2E52;--gold:#F5A623;--cream:#FAF6EE;--teal:#1F8A8A;--soft:#E8ECF4;--ink:#1F2937;--muted:#5B6678;--good:#2E9E5B;--bad:#D9534F}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--navy);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;color:var(--ink)}
+#app{max-width:520px;margin:0 auto;min-height:100vh;min-height:100dvh;background:var(--cream);position:relative}
+.top{background:var(--navy);color:#fff;padding:calc(env(safe-area-inset-top) + 14px) 18px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5}
+.top .hi{font-size:13px;color:#C8D0E0}
+.top .goal{font-size:19px;font-weight:700;margin-top:2px}
+.xp{background:var(--gold);color:var(--navy);font-weight:800;border-radius:999px;padding:6px 12px;font-size:14px}
+main{padding:16px 16px 110px}
+h1{font-size:26px;margin:0 0 6px;color:var(--navy)}
+h2{font-size:19px;margin:20px 0 8px;color:var(--navy)}
+p.sub{color:var(--muted);margin:0 0 14px;line-height:1.4}
+.card{background:#fff;border-radius:18px;padding:14px 16px;margin:10px 0;box-shadow:0 1px 4px rgba(18,30,58,.08)}
+.card.navy{background:var(--navy);color:#fff}
+.card.soft{background:var(--soft)}
+.card.sel{outline:3px solid var(--gold)}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:14px;font-size:17px;font-weight:700;background:var(--gold);color:var(--navy);margin:12px 0 0;cursor:pointer}
+.btn.alt{background:var(--soft);color:var(--navy)}
+.btn.ghost{background:transparent;color:var(--muted);font-weight:600;font-size:14px}
+.btn:active{transform:scale(.98)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chip{border:2px solid var(--soft);background:#fff;color:var(--navy);border-radius:999px;padding:9px 14px;font-size:15px;font-weight:600;cursor:pointer}
+.chip.on{background:var(--navy);border-color:var(--navy);color:#fff}
+input[type=text],textarea{width:100%;border:2px solid var(--soft);border-radius:14px;padding:13px;font-size:17px;font-family:inherit;background:#fff;color:var(--ink)}
+textarea{min-height:110px;resize:vertical}
+.hero{background:var(--navy);color:#fff;padding:calc(env(safe-area-inset-top) + 50px) 22px 26px;border-radius:0 0 28px 28px}
+.hero h1{color:#fff;font-size:38px}
+.hero .tag{color:var(--gold);font-size:18px;line-height:1.35}
+.tabs{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:520px;display:flex;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-top:1px solid #dde2ec;padding:6px 4px calc(env(safe-area-inset-bottom) + 6px);z-index:9}
+.tab{flex:1;text-align:center;border:0;background:none;padding:6px 0;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer}
+.tab span{display:block;font-size:22px;margin-bottom:1px}
+.tab.on{color:var(--navy)}
+.tab.on span{transform:scale(1.15)}
+.pcard{display:flex;gap:14px;align-items:center;cursor:pointer}
+.pcard .em{font-size:38px}
+.pcard b{font-size:18px;color:var(--navy)}
+.pcard small{color:var(--muted);display:block;margin-top:2px}
+.badge{display:inline-block;background:var(--gold);color:var(--navy);font-size:11px;font-weight:800;border-radius:999px;padding:3px 8px;margin-left:6px;vertical-align:middle}
+.rail{position:relative;padding-left:56px;margin:0}
+.rail::before{content:"";position:absolute;left:21px;top:20px;bottom:20px;width:4px;background:var(--gold);border-radius:2px}
+.node{position:relative;margin:10px 0}
+.node .dot{position:absolute;left:-56px;top:2px;width:44px;height:44px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-size:22px;border:3px solid var(--cream)}
+details{background:#fff;border-radius:16px;padding:12px 14px;box-shadow:0 1px 4px rgba(18,30,58,.08)}
+summary{font-weight:700;color:var(--navy);font-size:16px;cursor:pointer;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";float:right;color:var(--gold);font-size:20px;font-weight:800}
+details[open] summary::after{content:"\2212"}
+details p{margin:8px 0 4px;color:var(--ink);line-height:1.45;font-size:15px}
+.src{font-size:12px;color:var(--muted);margin-top:6px}
+.kv{display:flex;gap:8px;margin:6px 0;font-size:14px;line-height:1.35}
+.kv b{min-width:78px;color:var(--teal)}
+.row{display:flex;gap:12px;align-items:flex-start}
+.check{width:30px;height:30px;border-radius:50%;border:3px solid var(--gold);flex:none;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;background:#fff;cursor:pointer;margin-top:1px}
+.check.on{background:var(--good);border-color:var(--good)}
+.type{font-size:11px;font-weight:800;letter-spacing:.5px;color:var(--teal);text-transform:uppercase}
+.why{color:var(--muted);font-size:14px;margin-top:4px;line-height:1.35}
+.skill{display:inline-block;font-size:12px;font-weight:700;background:var(--soft);color:var(--navy);border-radius:999px;padding:3px 9px;margin-top:6px}
+.pb{height:10px;background:var(--soft);border-radius:6px;overflow:hidden;margin:8px 0}
+.pb i{display:block;height:100%;background:var(--gold)}
+.dots{display:flex;gap:6px;margin-top:6px}
+.dots i{width:22px;height:22px;border-radius:50%;background:var(--soft);display:block}
+.dots i.on{background:var(--gold);box-shadow:0 0 0 3px rgba(245,166,35,.3)}
+.opt{display:block;width:100%;text-align:left;border:2px solid var(--soft);background:#fff;border-radius:14px;padding:13px;font-size:16px;margin:8px 0;color:var(--ink);cursor:pointer;font-family:inherit}
+.opt.good{border-color:var(--good);background:#E8F6EE}
+.opt.bad{border-color:var(--bad);background:#FBEAEA}
+.fb{border-radius:14px;padding:12px 14px;margin-top:10px;line-height:1.45}
+.fb.good{background:#E8F6EE}
+.fb.ok{background:#FFF3DC}
+.demo{font-size:12px;color:var(--muted);text-align:center;margin:18px 0 0;line-height:1.4}
+.share{background:linear-gradient(160deg,var(--navy),var(--navy2));color:#fff;border-radius:22px;padding:20px}
+.share h3{margin:0;font-size:22px}
+.share .m{color:var(--gold);font-weight:700;font-size:13px;letter-spacing:.5px;margin-top:14px}
+.share .dots i{background:rgba(255,255,255,.2)}
+.share .dots i.on{background:var(--gold)}
+.pop{position:fixed;pointer-events:none;font-size:26px;z-index:99;animation:pop 1s ease-out forwards}
+@keyframes pop{0%{transform:translate(0,0) scale(.5);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(1.3) rotate(var(--r));opacity:0}}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 90px);transform:translateX(-50%);background:var(--navy);color:#fff;padding:12px 18px;border-radius:14px;z-index:100;font-weight:700;max-width:90%;text-align:center;animation:fade 2.4s forwards}
+@keyframes fade{0%{opacity:0;transform:translate(-50%,10px)}10%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
+.stp{display:inline-block;background:var(--soft);color:var(--navy);font-size:12px;font-weight:700;border-radius:999px;padding:4px 9px;margin:2px 0}
+.jr{display:flex;align-items:center;margin:2px 0 14px}
+.js{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer}
+.jd{width:38px;height:38px;border-radius:50%;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:var(--navy);border:3px solid var(--soft)}
+.js.done .jd{background:var(--navy);color:var(--gold);border-color:var(--navy)}
+.js.next .jd{border-color:var(--gold);background:#fff}
+.jl{font-size:11px;font-weight:700;color:var(--muted)}
+.js.done .jl,.js.next .jl{color:var(--navy)}
+.jline{flex:1;height:3px;background:var(--soft);margin:0 2px 16px}
+.back{border:0;background:none;color:var(--teal);font-weight:700;font-size:16px;padding:0;margin-bottom:8px;cursor:pointer}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* ============ DATA (demo content; a curator would verify real versions) ============ */
+const SK={show_up:["📅","Show Up"],think:["🧠","Think"],communicate:["💬","Communicate"],experience:["🔨","Try It"],prepare:["🎓","Prepare"]};
+const DIPLOMA={e:"🎓",t:"High school diploma",d:"The first step on every route. Stay on track: attend, pass your core classes, and earn your credits.",src:"Source: Baltimore City Public Schools graduation requirements"};
+
+const PATHS={
+baker:{id:"baker",emoji:"🥐",title:"Baker / bakery owner",pitch:"Turn baking into a career",
+kw:["bak","cake","pastry","cookie","bread","cook","chef","dessert","cupcake","food","bakery"],
+routes:[
+ {name:"Community college certificate",tag:"Most direct",time:"Often about 1–2 years after graduation (varies by program)",cost:"Lower",fit:"You want hands-on skills fast and a recognized credential.",hard:"Early hours and physical work. Starting pay is often modest.",
+  nodes:[DIPLOMA,
+   {e:"🏫",t:"Baking & pastry certificate",d:"Programs typically cover baking fundamentals, food science, sanitation, nutrition, and basic business. Check which nearby college offers one.",src:"Source: community college program page"},
+   {e:"🥐",t:"Bakery job",d:"Entry roles include bakery assistant and production baker. Many employers want a food handler card.",src:"Source: employer job posts; U.S. Bureau of Labor Statistics"},
+   {e:"🏪",t:"Own bakery (later)",d:"Usually after real work experience. Needs permits, a business registration, and a plan for money.",src:"Source: local health department; state business registration"}]},
+ {name:"Work first, learn on the job",tag:"Earn while you learn",time:"You can start soon after graduation",cost:"You earn while you learn",fit:"You prefer learning by doing and want income quickly.",hard:"Advancing can be slower without credentials, and it depends on your employer.",
+  nodes:[DIPLOMA,
+   {e:"🥐",t:"Entry bakery job",d:"Start as an assistant or counter team member. Show up on time and ask questions.",src:"Source: employer job posts"},
+   {e:"📈",t:"Train under a baker",d:"Learn techniques on the job. Add short courses or certifications when you can.",src:"Source: employer training; community college short courses"},
+   {e:"👩‍🍳",t:"Lead baker or own shop",d:"Experience plus credentials opens lead roles and, later, ownership.",src:"Source: industry experience"}]},
+ {name:"Four-year degree",tag:"Widest range of careers",time:"About 4 years",cost:"Higher",fit:"You like the science side: food science, product development, or management.",hard:"Takes longer and costs more. Scholarships and aid help.",
+  nodes:[DIPLOMA,
+   {e:"🏛️",t:"Four-year program",d:"Food science, hospitality management, or business degrees connect to baking and food companies.",src:"Source: college program pages"},
+   {e:"🔬",t:"Food industry or management role",d:"Roles like product developer, quality assurance, or bakery manager.",src:"Source: U.S. Bureau of Labor Statistics"},
+   {e:"🏪",t:"Own a business or lead a team",d:"A degree can help with scaling a business or moving into leadership.",src:"Source: industry pathways"}]}
+],
+credLabels:["To get hired","To run your own bakery"],
+creds:[[
+ {t:"Food handler card",d:"Basic food safety training, for example ServSafe Food Handler or a local equivalent. Often quick, and some employers require it."},
+ {t:"Food protection manager certification",d:"Usually for supervisors and managers, for example ServSafe Manager. Check what Maryland and your county require."}],[
+ {t:"Food service license or permit",d:"Issued by the local health department. Rules differ for a storefront and baking at home."},
+ {t:"Business registration and tax ID",d:"Register the business with the state and get a federal tax ID."},
+ {t:"Zoning and inspections",d:"The space has to meet zoning, fire, and health inspection rules."},
+ {t:"Home baking (cottage food)",d:"Some states allow limited home sales with special rules. Check Maryland's current rules before selling anything."}]],
+req:[["High school diploma","Stay on track: attendance and passing core classes."],["Food science","Take chemistry. Baking is chemistry you can eat."],["Scaling recipes","Math: ratios and fractions."],["Food safety","Learn handwashing, temperatures, and cross-contact."],["Business basics","Make a pretend bakery budget."]],
+plan:{
+ 9:[["Course","Stay on track in math, English, and science"],["Try it","Start a baking club or a home baking log"],["Try it","Visit a local bakery and look around"],["Milestone","Finish 9th grade with all your credits"]],
+ 10:[["Course","Take chemistry or biology"],["Course","Algebra or geometry (recipes are ratios)"],["Try it","Bake for a family event and price it"],["Milestone","Look up nearby baking programs"]],
+ 11:[["Course","Business, culinary, or CTE class if offered"],["Credential","Get a food handler card"],["Try it","Part-time job or volunteering at a bakery"],["Milestone","Compare two certificate programs; ask about dual enrollment"]],
+ 12:[["Milestone","Apply to a certificate program"],["Milestone","Fill out financial aid forms and apply for scholarships"],["Try it","Line up a job; do an informational interview with an alum"],["Milestone","Graduate on time"]]},
+actions:{a:[
+ {t:"Go to every class this week",why:"Bakeries open on time. Showing up is the first ingredient.",skill:"show_up"},
+ {t:"Turn in every math assignment",why:"Baking is ratios and scaling.",skill:"think"},
+ {t:"Bake something and write down what you changed",why:"Recipe notes are lab notes.",skill:"experience"},
+ {t:"Ask one adult what they like about their job",why:"Real people teach you what websites can't.",skill:"communicate"},
+ {t:"Read the jobs page of one Baltimore bakery",why:"See what employers really ask for.",skill:"prepare"}],
+ b:[
+ {t:"Compare two certificate programs",why:"Cost, length, and courses differ.",skill:"prepare"},
+ {t:"Ask a baker or alum two questions",why:"Hear what the work is really like.",skill:"communicate"},
+ {t:"Work or volunteer one shift in food service",why:"Experience beats guessing.",skill:"experience"},
+ {t:"Finish your food safety training",why:"It's often required to be hired.",skill:"prepare"},
+ {t:"Keep your grades on track this week",why:"Aid and programs look at your record.",skill:"show_up"}]},
+quiz:{title:"Scale the cookie recipe",q:"A recipe makes 12 cookies using 2 cups of flour. You need 36 cookies for a school sale. How much flour?",opts:["4 cups","6 cups","8 cups"],ans:1,why:"36 ÷ 12 = 3 batches. 3 × 2 cups = 6 cups. Bakers do this every day.",skill:"think"},
+scn:{title:"The 5 a.m. oven problem",q:"You're a bakery apprentice at 5 a.m. The oven is running 20 minutes late and a catering order is due at 7. What do you do?",skill:"communicate",opts:[
+ {t:"Tell the head baker right away and ask what to prioritize",good:true,fb:"Great call. Speaking up early gives your team time to fix it."},
+ {t:"Stay quiet and hope it catches up",good:false,fb:"Problems grow in silence. Bakers tell the team early."},
+ {t:"Skip steps to go faster",good:false,fb:"Skipping steps can ruin the batch or break food safety rules."}]}
+},
+police:{id:"police",emoji:"🚓",title:"Police officer",pitch:"Serve and protect your community",
+kw:["police","cop","officer","law","detective","public safety","safety","crime","sheriff"],
+routes:[
+ {name:"Academy after graduation",tag:"Most direct",time:"Depends on the agency's minimum age and hiring process",cost:"Often paid training",fit:"You meet the agency's requirements and want to start soon.",hard:"Age minimums, a background check, and a fitness test.",
+  nodes:[DIPLOMA,{e:"📝",t:"Apply and screening",d:"Typical steps include an application, written test, fitness test, interviews, and a background check. Details vary by agency.",src:"Source: agency hiring page"},{e:"🏫",t:"Police academy",d:"Training run by the agency or state. Check your agency's page for what it involves.",src:"Source: agency / state training commission"},{e:"🚓",t:"Officer",d:"Start on patrol, with chances to specialize later.",src:"Source: agency career pages"}]},
+ {name:"Community college + criminal justice",tag:"Builds options",time:"About 2 years, then apply",cost:"Lower",fit:"You want college credit and time to grow before applying.",hard:"More school before the job.",
+  nodes:[DIPLOMA,{e:"🏫",t:"Community college",d:"Associate degree options such as criminal justice. Credits may transfer.",src:"Source: community college program page"},{e:"📝",t:"Apply to an agency",d:"College can help with applications. Check each agency's preferences.",src:"Source: agency hiring page"},{e:"🚓",t:"Academy and officer",d:"Complete training and begin work.",src:"Source: agency / state training commission"}]},
+ {name:"Four-year degree",tag:"Widest range",time:"About 4 years",cost:"Higher",fit:"You're interested in investigations, policy, or leadership.",hard:"Takes longer and costs more.",
+  nodes:[DIPLOMA,{e:"🏛️",t:"Four-year program",d:"Criminal justice, psychology, sociology, or other fields.",src:"Source: college program pages"},{e:"📝",t:"Apply to an agency",d:"Some roles prefer or require a degree.",src:"Source: agency hiring page"},{e:"🕵️",t:"Officer or specialist",d:"Degrees can help with investigative and leadership roles.",src:"Source: agency career pages"}]},
+ {name:"Related public safety roles",tag:"Other ways to serve",time:"Varies by role",cost:"Varies",fit:"You want to serve but aren't sure about policing.",hard:"Different duties and schedules.",
+  nodes:[DIPLOMA,{e:"📞",t:"911 dispatcher",d:"Dispatchers take emergency calls and send help.",src:"Source: local 911 center"},{e:"⚖️",t:"Corrections or probation",d:"Roles in the justice system with different training.",src:"Source: state agency pages"},{e:"🚑",t:"Emergency management or EMS",d:"Help in emergencies and disasters.",src:"Source: local agency pages"}]}
+],
+credLabels:["To be eligible","To train and advance"],
+creds:[[
+ {t:"Basic eligibility (varies by agency)",d:"Often includes a minimum age, a diploma or GED, a driver's license, a background check, and a fitness test. Always check the agency's current posting."}],[
+ {t:"Academy training",d:"Completed through the agency or state, and often required to be sworn in."},
+ {t:"State certification",d:"Officers are typically certified under state training standards. The agency guides you."},
+ {t:"Specialty training",d:"Roles like detective or K-9 add more training later."}]],
+req:[["High school diploma","Stay on track: attendance and passing core classes."],["Report writing","English assignments are report practice."],["Community trust","Group projects and community service."],["Fitness test","Build a gym or sports habit."],["Background check","Think before you post; ask a counselor if you have questions."]],
+plan:{
+ 9:[["Course","Stay on track in English and core classes"],["Try it","Join a team, club, or youth program"],["Try it","Build a simple fitness routine"],["Milestone","Finish 9th grade with all your credits"]],
+ 10:[["Course","Take a writing-heavy class and work on speaking"],["Try it","Volunteer in your community"],["Try it","Talk to someone in public safety"],["Milestone","Learn the age and requirements of local agencies"]],
+ 11:[["Course","Dual enrollment in criminal justice if offered"],["Try it","Interview an officer or dispatcher"],["Try it","Keep up your fitness routine"],["Milestone","Compare routes: academy, college, or related roles"]],
+ 12:[["Milestone","Apply to college or prepare for hiring"],["Milestone","Fill out financial aid forms"],["Try it","Attend a hiring or career event"],["Milestone","Graduate on time"]]},
+actions:{a:[
+ {t:"Go to every class this week",why:"Reliability is a core part of the job.",skill:"show_up"},
+ {t:"Write a clear, factual paragraph about your week",why:"Reports need facts, not opinions.",skill:"think"},
+ {t:"Do a group task and listen first",why:"Community trust starts with listening.",skill:"communicate"},
+ {t:"Move your body 3 times this week",why:"Fitness tests reward steady habits.",skill:"experience"},
+ {t:"Look up your local agency's minimum age",why:"Know the real requirements early.",skill:"prepare"}],
+ b:[
+ {t:"Interview a public safety worker",why:"Learn the real day-to-day.",skill:"communicate"},
+ {t:"Compare academy, college, and related roles",why:"Multiple routes mean better choices.",skill:"prepare"},
+ {t:"Volunteer a few hours",why:"Service builds trust and experience.",skill:"experience"},
+ {t:"Keep your attendance strong",why:"Diploma first, always.",skill:"show_up"},
+ {t:"Practice a calm conversation with a classmate",why:"De-escalation is a skill.",skill:"communicate"}]},
+quiz:{title:"Write the report",q:"Which sentence is the clearest, most factual report line?",opts:["The guy looked suspicious and was acting crazy.","A man in a red jacket stood by the door for 10 minutes and looked at each car.","He was obviously up to no good."],ans:1,why:"Good reports describe what you can observe: who, what, where, how long. Not opinions.",skill:"think"},
+scn:{title:"The upset kid",q:"You're a cadet at a community event. A kid is upset and shouting. What do you do?",skill:"communicate",opts:[
+ {t:"Stay calm, crouch down, and ask what's wrong",good:true,fb:"Calm and curious usually lowers the temperature. That's de-escalation."},
+ {t:"Tell them loudly to be quiet",good:false,fb:"Raising your voice often escalates things."},
+ {t:"Walk away",good:false,fb:"Ignoring a person in distress doesn't build trust."}]}
+},
+nurse:{id:"nurse",emoji:"🩺",title:"Nurse",pitch:"Care for people when they need it",
+kw:["nurse","nursing","doctor","health","hospital","medical","care","cna","patient"],
+routes:[
+ {name:"Nursing assistant (CNA) first",tag:"Fastest way in",time:"CNA training is often short (weeks to months; varies)",cost:"Lower",fit:"You want patient experience quickly while you study.",hard:"Physical, emotional work with modest starting pay.",
+  nodes:[DIPLOMA,{e:"📋",t:"CNA training and exam",d:"Complete a state-approved program, then pass the certification exam.",src:"Source: state board of nursing"},{e:"🏥",t:"Work as a CNA",d:"Gain patient care experience. Some employers help with tuition.",src:"Source: employer job posts"},{e:"🎓",t:"Continue to LPN or RN",d:"Your experience supports applications to nursing programs.",src:"Source: community college program pages"}]},
+ {name:"Associate degree in nursing (RN)",tag:"Common route to RN",time:"About 2 years of nursing study (plus prerequisites)",cost:"Lower than most four-year degrees",fit:"You want to become an RN at a community college.",hard:"Competitive programs, with prerequisites like biology.",
+  nodes:[DIPLOMA,{e:"🧪",t:"Prerequisite courses",d:"Often biology and anatomy. Strong grades help.",src:"Source: community college program page"},{e:"🏫",t:"Nursing program (ADN)",d:"Classes plus supervised clinical practice.",src:"Source: community college program page"},{e:"📜",t:"Pass the NCLEX-RN and get licensed",d:"A licensing exam, with licenses issued by the state board of nursing.",src:"Source: state board of nursing"},{e:"🩺",t:"RN job",d:"Work in hospitals, clinics, and schools.",src:"Source: U.S. Bureau of Labor Statistics"}]},
+ {name:"Bachelor's in nursing (BSN)",tag:"Most options",time:"About 4 years",cost:"Higher",fit:"You're interested in leadership, public health, or advanced practice later.",hard:"Takes longer and costs more.",
+  nodes:[DIPLOMA,{e:"🏛️",t:"BSN program",d:"Four-year degree with clinical practice.",src:"Source: college program pages"},{e:"📜",t:"NCLEX-RN and license",d:"Required to practice as an RN.",src:"Source: state board of nursing"},{e:"🩺",t:"RN or leadership roles",d:"A BSN can open more roles over time.",src:"Source: employer job posts"}]}
+],
+ladder:[{t:"Nursing assistant",n:4495,g:"+3.5%",hs:36.5},{t:"Licensed practical nurse (LPN)",n:1544,g:"+4.3%",hs:20.2},{t:"Registered nurse (RN)",n:7567,g:"+3.0%",hs:1.3}],
+credLabels:["To train","To work as a nurse"],
+creds:[[
+ {t:"CPR / BLS certification",d:"Often required before clinical programs."},
+ {t:"CNA certification",d:"State-approved training plus an exam."}],[
+ {t:"RN license (NCLEX-RN)",d:"Passing the exam and getting licensed by the state board of nursing."},
+ {t:"LPN license (NCLEX-PN)",d:"A shorter route to nursing with a different license."}]],
+req:[["High school diploma","Stay on track: attendance and passing core classes."],["Biology","Take biology and learn how the body works."],["Dosage-style math","Be solid with ratios and decimals."],["Caring communication","Volunteer and practice listening."],["Competitive programs","Keep grades strong."]],
+plan:{
+ 9:[["Course","Stay on track in science and math"],["Try it","Join a health or service club"],["Try it","Learn basic first aid"],["Milestone","Finish 9th grade with all your credits"]],
+ 10:[["Course","Take biology"],["Try it","Volunteer in a caring setting"],["Try it","Talk to a nurse"],["Milestone","Learn the difference between CNA, LPN, and RN"]],
+ 11:[["Course","Chemistry or anatomy if offered"],["Credential","CPR or first aid certification"],["Try it","Job shadow or volunteer"],["Milestone","Compare nursing programs and prerequisites"]],
+ 12:[["Milestone","Apply to CNA or nursing programs"],["Milestone","Fill out financial aid forms"],["Try it","Keep grades strong for admissions"],["Milestone","Graduate on time"]]},
+actions:{a:[
+ {t:"Go to every class this week",why:"Clinical work depends on reliability.",skill:"show_up"},
+ {t:"Finish every science assignment",why:"Biology is the base of nursing.",skill:"think"},
+ {t:"Practice listening to a friend without interrupting",why:"Caring starts with listening.",skill:"communicate"},
+ {t:"Learn 3 first-aid basics",why:"A small taste of the work.",skill:"experience"},
+ {t:"Read about CNA, LPN, and RN",why:"Several routes lead in.",skill:"prepare"}],
+ b:[
+ {t:"Talk to a nurse about their path",why:"Hear what the work is like.",skill:"communicate"},
+ {t:"Compare two nursing programs",why:"Prerequisites differ.",skill:"prepare"},
+ {t:"Volunteer or shadow a few hours",why:"Experience helps you decide.",skill:"experience"},
+ {t:"Keep your grades strong",why:"Programs can be competitive.",skill:"show_up"},
+ {t:"Review ratio and decimal math",why:"Safe care depends on careful math.",skill:"think"}]},
+quiz:{title:"Rounds math",q:"A nurse checks 6 patients every 2 hours during an 8-hour shift. How many checks in total?",opts:["12","24","48"],ans:1,why:"8 ÷ 2 = 4 rounds. 4 × 6 patients = 24 checks.",skill:"think"},
+scn:{title:"I don't know the answer",q:"You're a nursing assistant and a patient asks a medical question you can't answer. What do you do?",skill:"communicate",opts:[
+ {t:"Say \"Let me check with the nurse\" and follow up",good:true,fb:"Knowing your limits keeps patients safe. Asking is a strength."},
+ {t:"Make up an answer",good:false,fb:"Guessing about health can hurt someone."},
+ {t:"Change the subject",good:false,fb:"The patient still needs an answer. Follow up."}]}
+},
+it:{id:"it",emoji:"💻",title:"IT support specialist",pitch:"Fix tech problems and help people",
+kw:["computer","laptop","tech","troubleshoot","help desk","it support","cyber","network","wifi","wi-fi"],
+routes:[
+ {name:"Community college IT certificate",tag:"Most direct",time:"Often about 1–2 years (varies by program)",cost:"Lower",fit:"You like fixing tech and want hands-on skills plus a recognized credential.",hard:"Entry-level pay can be modest, and you keep learning as technology changes.",
+  nodes:[DIPLOMA,
+   {e:"🏫",t:"IT certificate or associate program",d:"Community college programs often cover hardware, networking, operating systems, and security basics, and may prepare you for industry certifications such as CompTIA A+. Check which nearby college offers one.",src:"Source: community college program pages"},
+   {e:"🛠️",t:"Entry-level IT support job",d:"Roles include help desk and desktop support. BLS says user support specialists typically need some college courses, and some people qualify with a high school diploma plus IT certifications.",src:"Source: U.S. Bureau of Labor Statistics, Occupational Outlook Handbook"},
+   {e:"📈",t:"Move up",d:"Experience and credentials can lead to network support, systems administration, or security roles.",src:"Source: U.S. Bureau of Labor Statistics"}]},
+ {name:"Free job training (like Grads2Careers)",tag:"Credential fast",time:"Starts after graduation; length varies by program",cost:"Free if eligible",fit:"You want job training and a credential right after graduating.",hard:"Eligibility rules apply (such as age and residency), there is an entrance test, and spots are limited.",
+  nodes:[DIPLOMA,
+   {e:"📝",t:"Apply and take the entrance test",d:"Grads2Careers serves eligible Baltimore City graduates. Applicants take a short math and reading test, and a summer prep class can help you build skills first. Check current age and eligibility rules.",src:"Source: bmoreg2c.com (Grads2Careers)"},
+   {e:"💻",t:"IT training and credential",d:"Classroom instruction plus hands-on practice, with job placement help.",src:"Source: Grads2Careers; Baltimore's Promise"},
+   {e:"🛠️",t:"Entry-level IT job",d:"Start in help desk or desktop support. Some people continue to college later.",src:"Source: employer job posts"}]},
+ {name:"Four-year IT degree",tag:"Widest range",time:"About 4 years",cost:"Higher",fit:"You're curious about security, systems, or software and want the most options later.",hard:"Takes longer and costs more. Scholarships and aid help.",
+  nodes:[DIPLOMA,
+   {e:"🏛️",t:"Bachelor's in IT or information systems",d:"Degrees in IT, information systems, or computer science connect to many tech roles. You can also start at a community college and transfer.",src:"Source: college program pages"},
+   {e:"🔐",t:"Systems, security, or analyst role",d:"BLS lists a bachelor's degree as the typical entry education for roles like systems administrator and information security analyst.",src:"Source: U.S. Bureau of Labor Statistics"},
+   {e:"👩‍💻",t:"Specialize or lead",d:"More education and experience can open leadership and research roles.",src:"Source: industry pathways"}]}
+],
+ladderTitle:"📈 The IT ladder · U.S. median pay, May 2025",
+ladder:[{t:"Computer user support specialist",pay:61860,edu:"Some college courses typical. A diploma plus IT certifications may qualify."},{t:"Computer network support specialist",pay:76220,edu:"Associate degree typical"},{t:"Network and computer systems administrator",pay:99130,edu:"Bachelor's degree typical"}],
+ladderNote:"For comparison, all U.S. occupations: $50,980. BLS projects support roles to shrink slightly by 2035, so stack certifications and keep climbing. Source: U.S. Bureau of Labor Statistics.",
+credLabels:["To get hired","To grow your career"],
+creds:[[
+ {t:"CompTIA A+ (or similar)",d:"A widely used entry-level IT support certification, and many programs prepare you for it. Check which credential local employers ask for."},
+ {t:"A log of problems you've solved",d:"Not required, but a short list of fixes shows an employer what you can do."}],[
+ {t:"Networking and security certifications",d:"Examples include CompTIA Network+ and Security+. They can help you move into network and security roles."},
+ {t:"Associate or bachelor's degree",d:"Network support roles often prefer an associate degree, and many systems and security roles ask for a bachelor's."}]],
+req:[["High school diploma","Stay on track: attendance and passing core classes."],["Problem solving","Math and science practice step-by-step logic, which is what troubleshooting is."],["Explaining clearly","Support work means explaining a fix in plain language."],["Hands-on practice","Fix a family or school device and keep notes."],["Next-step research","Look up local certificate and training programs."]],
+plan:{
+ 9:[["Course","Keep up with math and core classes"],["Try it","Do a basic troubleshooting project (with an adult's OK)"],["Try it","Join a tech or computer club if your school has one"],["Milestone","Finish 9th grade with all your credits"]],
+ 10:[["Course","Take a computer science or CTE class if offered"],["Try it","Practice explaining a fix in plain language"],["Try it","Help a teacher, family member, or neighbor with a tech problem"],["Milestone","Look up two local IT certificate or training programs"]],
+ 11:[["Course","Networking, cybersecurity, or CTE class if offered"],["Try it","Look for an IT internship, job shadow, or volunteer help-desk role"],["Credential","Ask a counselor about IT certifications, such as CompTIA A+"],["Milestone","Review two training programs: requirements, costs, deadlines"]],
+ 12:[["Milestone","Meet your counselor to review two programs' requirements, costs, and deadlines"],["Milestone","Apply to an IT training program or community college"],["Milestone","Fill out financial aid forms and apply for scholarships"],["Try it","Line up an entry-level job or internship; talk to someone in IT support"],["Milestone","Graduate on time"]]},
+actions:{a:[
+ {t:"Go to every class this week",why:"Support teams count on people who show up.",skill:"show_up"},
+ {t:"Finish every math assignment",why:"Troubleshooting is step-by-step logic, like math.",skill:"think"},
+ {t:"Explain a tech fix to someone in plain language",why:"IT support is explaining, not just fixing.",skill:"communicate"},
+ {t:"Fix or set up a device and write down each step",why:"Notes turn a fix into a skill.",skill:"experience"},
+ {t:"Look up what an IT support specialist does",why:"Know the job before you aim for it.",skill:"prepare"}],
+ b:[
+ {t:"Compare two IT certificate or training programs",why:"Cost, length, and requirements differ.",skill:"prepare"},
+ {t:"Ask someone in IT what they did first",why:"Real stories beat guessing.",skill:"communicate"},
+ {t:"Volunteer to help with a tech problem",why:"Experience shows employers what you can do.",skill:"experience"},
+ {t:"Keep your grades and attendance on track",why:"Programs look at your record.",skill:"show_up"},
+ {t:"Write down a problem you solved and how",why:"A log of fixes helps in interviews.",skill:"think"}]},
+quiz:{title:"Troubleshoot the Wi-Fi",q:"One student's laptop can't load any websites, but the laptop next to it can. What should you check first?",opts:["Buy a new laptop","Check whether this laptop is connected to Wi-Fi","Reinstall the operating system"],ans:1,why:"Start with the simplest cause and work up. Good troubleshooting means checking one thing at a time.",skill:"think"},
+scn:{title:"The frustrated teacher",q:"A teacher says, \"My projector is broken and class starts in 5 minutes!\" What do you do?",skill:"communicate",opts:[
+ {t:"Stay calm, ask what they see, and check the cable first",good:true,fb:"Calm questions and simple checks fix most problems, and people feel heard."},
+ {t:"Tell them it's probably their fault",good:false,fb:"Blaming people makes them less likely to ask for help."},
+ {t:"Say you'll look at it tomorrow",good:false,fb:"The class needs help now. If you can't fix it, say who can."}]}
+}};
+
+/* Real local labor-market data. Jobs: Baltimore County 2025 Q2 Economic Indicators report p.13 (Lightcast, 2024 jobs).
+   hs = % of U.S. workers 25+ whose highest education is a high school diploma or equivalent (BLS Table 5.3, 2023-24 ACS). */
+const JOBS=[
+ {t:"Retail salesperson",n:10732,hs:29.3},
+ {t:"Stocker / order filler",n:7614,hs:43.7},
+ {t:"Hand laborer / material mover",n:7376,hs:46.1},
+ {t:"Building cleaner (janitor)",n:4797,hs:44.5},
+ {t:"Nursing assistant",n:4495,hs:36.5,path:"nurse"},
+ {t:"Heavy truck driver",n:3481,hs:46.5}];
+
+/* Sample alumni stories: FICTIONAL, for demo only. Real version = opt-in alumni + published profiles. */
+const STORIES={
+baker:[
+ {id:"b1",name:"Jordan R.",em:"🧑‍🍳",cls:"Class of 2019",sameSchool:true,route:0,start:"Was struggling in math in 9th grade",steps:["Diploma","Baking certificate","Pastry assistant","Own bakery"],quote:"I wasn't sure college was for me. The certificate was.",tip:"Get your food handler card early. It got me my first job."},
+ {id:"b2",name:"Aaliyah T.",em:"👩‍🍳",cls:"Class of 2017",sameSchool:false,route:1,start:"Needed income right after graduating",steps:["Diploma","Bakery counter","Trained under head baker","Lead baker"],quote:"I learned the craft by showing up early and asking questions.",tip:"Say yes to the early shifts. That's where you learn."},
+ {id:"b3",name:"Marcus W.",em:"🧑‍🔬",cls:"Class of 2015",sameSchool:true,route:2,start:"Loved the science of baking",steps:["Diploma","Food science degree","Product developer","Side bakery"],quote:"Chemistry class made baking make sense.",tip:"Apply for scholarships in your senior year."}],
+police:[
+ {id:"p1",name:"Devon C.",em:"👮",cls:"Class of 2018",sameSchool:true,route:1,start:"First in the family to go to college",steps:["Diploma","Criminal justice AA","Academy","Patrol officer"],quote:"College credits gave me time to grow up before the academy.",tip:"Stay active. The fitness test comes fast."},
+ {id:"p2",name:"Priya S.",em:"🎧",cls:"Class of 2016",sameSchool:false,route:3,start:"Wanted to help but not on patrol",steps:["Diploma","911 training","Dispatcher","Shift supervisor"],quote:"I help people on the worst day of their lives.",tip:"Practice staying calm on the phone."}],
+nurse:[
+ {id:"n1",name:"Tasha M.",em:"👩‍⚕️",cls:"Class of 2018",sameSchool:true,route:0,start:"Needed to earn while studying",steps:["Diploma","CNA certificate","Worked as CNA","RN (associate)"],quote:"Being a CNA first showed me I really wanted this.",tip:"Volunteer early. It makes applications stronger."},
+ {id:"n2",name:"Luis G.",em:"🧑‍⚕️",cls:"Class of 2014",sameSchool:false,route:2,start:"Strong in science",steps:["Diploma","BSN program","RN","Charge nurse"],quote:"I picked the four-year route for more options later.",tip:"Keep your science grades strong."}],
+it:[
+ {id:"i1",name:"Ling",em:"👩‍💻",cls:"Community college, then UMBC",real:true,sameSchool:false,route:0,start:"Started at community college",steps:["Community college","Transfer to UMBC","Desktop support + bachelor's","PhD student"],ask:"What did you do first?"},
+ {id:"i2",name:"Devin K.",em:"🧑‍💻",cls:"Class of 2019",sameSchool:true,route:1,start:"Wanted job training right after graduating",steps:["Diploma","Free IT training","Help desk job","Systems technician"],quote:"I didn't know training like this existed until a counselor told me.",tip:"Ask your counselor about training programs early."}]};
+
+/* ===== Apply Dashboard data (typical timelines; confirm with each school/program/employer) ===== */
+const TRACKS={uni:"4-year college",cc:"Community college / certificate",job:"Job or training program"};
+const TRACK_MAP={baker:["cc","job","uni"],police:["job","cc","uni","job"],nurse:["job","cc","uni"],it:["cc","job","uni"]};
+const GROUPS=["Now (9th–10th grade)","Junior year","Summer before senior year","Senior fall (Sep–Dec)","Senior winter–spring (Jan–May)","Enrollment / start"];
+const APPLY={
+uni:{portals:["Common App","FAFSA","School portals"],deadlines:[["Early application deadlines",11,1,-1],["Regular application deadlines",1,15,0],["Commit and enroll",5,1,0]],items:[
+ ["Keep your grades up. They count from 9th grade","Start an activities list: what you do, hours, roles","Join 1–2 things you care about (club, team, job, caregiving)","Create a college-only email","Google yourself and clean up anything you wouldn't want colleges to see","Visit one campus (or take a virtual tour)"],
+ ["Decide on the SAT/ACT or test-optional","Build a first list: dream, good fit, backup","Ask your counselor about dual enrollment and course plans","Find 3 scholarships to track","Think about which teachers know you best"],
+ ["Create your Common App account","Brainstorm 5 essay ideas and pick one story","Write a messy first draft","Ask two teachers for recommendations","Note every school's deadline and round"],
+ ["Finish and revise your personal statement","Add activities and honors to your application","Set up transcript sending","Create your FSA ID and gather FAFSA documents","Submit the FAFSA","Submit early applications","Submit a scholarship application","Check your portals"],
+ ["Submit regular applications","Send mid-year grades","Review decisions and compare offers (including aid)","Visit or revisit your top choices","Commit and pay your deposit"],
+ ["Apply for housing or plan your commute","Send your final transcript","Celebrate. You did it."]]},
+cc:{portals:["FAFSA","Community college portal","Scholarship tracker"],deadlines:[["Scholarship and aid priority (typical)",3,1,0],["Apply and register for fall (check your college)",6,1,0]],items:[
+ ["Keep your grades up and attend every day","Start an activities list: what you do, hours, roles","Create a professional email","Google yourself and clean up anything you wouldn't want a school or employer to see","Look up one community college program near you"],
+ ["Compare 2–3 programs: cost, length, courses, transfer options","Ask about dual enrollment to earn college credit in high school","Visit an open house or take a virtual tour","Ask about placement tests","Find 3 scholarships to track"],
+ ["Pick your top program and a backup","Check admission requirements (some programs, like nursing, are competitive)","Gather documents: ID, Social Security card, transcripts","Plan for transportation, work hours, and childcare if needed"],
+ ["Create your FSA ID and gather FAFSA documents","Submit the FAFSA","Apply to your program (many colleges accept applications on a rolling basis)","Apply for scholarships","Request your transcript"],
+ ["Take placement tests or send scores if needed","Review your financial aid offer","Meet an advisor and pick classes","Attend orientation"],
+ ["Register for classes","Buy books or find free options","First week: meet your advisor and find tutoring"]]},
+job:{portals:["Job board account","Training program portal","Resume saved"],deadlines:[["Training program applications (check each)",5,1,0],["Start your job search",6,1,0]],items:[
+ ["Keep your grades up and attend every day","Start an activities and skills list","Create a professional email","Google yourself and clean up anything an employer might see","Ask your counselor if you need a work permit for a part-time job"],
+ ["Get certifications employers ask for (food handler card, CPR)","Try a part-time job, volunteering, or job shadowing","Write a first resume","Ask an adult to be a reference","Talk to someone who does the job you want"],
+ ["Research training programs and employers near you","Gather ID documents (ID, Social Security card, driver's license or state ID)","Practice interview answers","Plan how you'll get to work or training"],
+ ["Apply to training programs (for example CNA) or apprenticeships","Apply for entry-level jobs in your field","Ask references for permission to list them","Follow up on every application"],
+ ["Interview and ask good questions","Compare offers: pay, hours, training, room to grow","Check if the employer helps pay for school","Accept an offer or program spot"],
+ ["Complete onboarding paperwork","Plan your first 90 days: what you'll learn","Set a next-step goal (certificate or promotion)"]]}};
+const CATS=[["Leadership",/(captain|president|leader|council|jrotc|robotics|debate|club)/i],["Work",/(job|cashier|shift|employ|intern|paid|restaurant|store|work)/i],["Family responsibility",/(sibling|babysit|caregiv|care for|grandm|grandp|family|translat)/i],["Service",/(volunteer|community|church|food bank|service|mentor|tutor)/i],["Arts",/(band|choir|music|art|draw|paint|theater|dance|drum|bak(e|ing)|cook)/i],["Sports",/(team|soccer|basketball|football|track|swim|baseball|volleyball|gym|sport)/i],["Academic",/(honor|class|science|math|research|summer program)/i]];
+
+const INTERESTS=[["🍰 Making & food","baker"],["🩺 Helping people heal","nurse"],["🛡️ Protecting my community","police"],["💻 Fixing tech","it"]];
+const BLOCK={time:"Pick the smallest action and do just that one.",motivation:"Look at your Path Map and remember your why. Even one step counts.",transport:"Choose actions you can do at school or at home.",how:"Ask your counselor or a teacher to walk you through it.",other:"Tell a counselor or a trusted adult. You don't have to solve it alone."};
+
+/* ============ STATE ============ */
+function fresh(){return {xseg:"route",seen:{},tdone:{},xpGiven:{},planAll:{},toolsOpen:null,track:null,portals:{},progs:{dream:[],fit:[],backup:[]},actsText:"",actsOut:null,school:"",pfilter:"all",saved:{},screen:"welcome",tab:"today",name:"",grade:9,interests:[],path:null,route:0,xp:{show_up:0,think:0,communicate:0,experience:0,prepare:0},done:{},qDone:{},week:0,reflect:null,letter:"",planGrade:9,sparkMsg:""};}
+let S;try{S=Object.assign(fresh(),JSON.parse(localStorage.getItem("slm")||"{}"));}catch(e){S=fresh();}
+if(S.tab==="path")S.tab="explore";else if(["week","quest"].includes(S.tab))S.tab="today";else if(!["today","explore","plan","me"].includes(S.tab))S.tab="today";
+if(S.planGrade<9||S.planGrade>13)S.planGrade=S.grade;
+function save(){try{localStorage.setItem("slm",JSON.stringify(S));}catch(e){}}
+let Q=null; // active quest (not saved)
+const P=()=>PATHS[S.path];
+const total=()=>Object.values(S.xp).reduce((a,b)=>a+b,0);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const poolKey=()=>S.grade<=10?"a":"b";
+function weekActions(){const pool=P().actions[poolKey()];return [0,1,2].map(i=>{const idx=(S.week*3+i)%pool.length;return Object.assign({idx},pool[idx]);});}
+const dkey=idx=>S.week+":"+S.path+":"+idx;
+function matchPath(text){const t=text.toLowerCase();for(const id in PATHS){if(PATHS[id].kw.some(k=>t.includes(k)))return id;}return null;}
+function markSeen(k){if(!S.seen[k]){S.seen[k]=true;save();}}
+
+/* ===== One task list for the whole app (Plan and Today both read it) ===== */
+const STAGES=[[9,"9th","Explore"],[10,"10th","Build"],[11,"11th","Prepare"],[12,"12th","Apply"],[13,"After","Launch"]];
+const TYPE_SKILL={"Course":"think","Try it":"experience","Credential":"prepare","Milestone":"prepare","Prep":"prepare","Apply":"prepare","Start":"show_up"};
+const SEASONS=["Summer","Fall","Winter–Spring"];
+const curTrack=()=>S.track||(TRACK_MAP[S.path]||[])[S.route]||"cc";
+function tasks(){const p=P(),tk=curTrack(),A=APPLY[tk];const out=[];
+ [9,10,11,12].forEach(g=>{p.plan[g].forEach((it,i)=>{const t=it[1];
+  if(g===12&&/^(apply|fill out financial aid)/i.test(t))return; // covered by application tasks
+  if(g===11&&/^compare/i.test(t))return;
+  out.push({id:"c:"+S.path+":"+g+":"+i,t,type:it[0],stage:g,season:g===12?(t==="Graduate on time"?"Winter–Spring":"Fall"):null});});});
+ A.items.forEach((grp,gi)=>grp.forEach((t,ii)=>{if(gi===0&&ii===0)return;
+  out.push({id:"a:"+tk+":"+gi+":"+ii,t,type:gi<=2?"Prep":gi<=4?"Apply":"Start",stage:gi===0?(ii<3?9:10):gi===1?11:gi<=4?12:13,season:gi===2?"Summer":gi===3?"Fall":gi===4?"Winter–Spring":null});}));
+ return out;}
+const seasonRank=t=>t.season?SEASONS.indexOf(t.season):0;
+function nextDeadline(A){const now=new Date();const base=now.getMonth()>=6?now.getFullYear()+1:now.getFullYear();const gy=base+(12-S.grade);let best=null;
+ for(let off=0;off<3&&!best;off++){for(const d of A.deadlines){const dt=new Date(gy+off+d[3],d[1]-1,d[2]);if(dt>now&&(!best||dt<best.dt))best={dt,label:d[0]};}}
+ return {days:Math.ceil((best.dt-now)/86400000),label:best.label,date:best.dt.toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"}),gy};}
+function tRow(t){const on=S.tdone[t.id];return `<div class="row" style="padding:8px 0;border-top:1px solid var(--soft)"><div class="check ${on?"on":""}" style="width:26px;height:26px;border-width:2px" data-a="ttoggle" data-v="${t.id}">${on?"✓":""}</div><div><div style="font-size:15px;line-height:1.35;${on?"color:var(--muted);text-decoration:line-through":""}">${t.t}</div><span class="stp" style="margin-top:3px">${t.type}</span></div></div>`;}
+
+/* ============ FUN ============ */
+function burst(el,em){const r=el?el.getBoundingClientRect():{left:innerWidth/2,top:innerHeight/2,width:0,height:0};const set=em||["🎉","✨","⭐","🥳"];for(let i=0;i<12;i++){const s=document.createElement("div");s.className="pop";s.textContent=set[i%set.length];s.style.left=(r.left+r.width/2)+"px";s.style.top=(r.top+r.height/2)+"px";s.style.setProperty("--dx",(Math.random()*240-120)+"px");s.style.setProperty("--dy",(-Math.random()*200-30)+"px");s.style.setProperty("--r",(Math.random()*360-180)+"deg");document.body.appendChild(s);setTimeout(()=>s.remove(),1000);}}
+function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2400);}
+function award(skill,n){S.xp[skill]+=n;}
+
+/* ============ VIEWS ============ */
+function header(){const p=P();return `<div class="top"><div><div class="hi">Hi, ${esc(S.name||"friend")} · Grade ${S.grade}</div><div class="goal">${p?p.emoji+" "+p.title:"Pick your spark"}</div></div><div class="xp">⭐ ${total()}</div></div>`;}
+function tabbar(){const t=[["today","🏠","Today"],["explore","🧭","Explore"],["plan","🗺️","Plan"],["me","🌟","Me"]];return `<nav class="tabs">${t.map(x=>`<button class="tab ${S.tab===x[0]?"on":""}" data-a="tab" data-v="${x[0]}"><span>${x[1]}</span>${x[2]}</button>`).join("")}</nav>`;}
+
+function vWelcome(){return `<div class="hero"><h1>Student Like Me</h1><div class="tag">See the future you want.<br>Know what to do today.</div></div>
+<main>
+<h2>Let's get you set up</h2>
+<p class="sub">Takes about 30 seconds. No real name needed.</p>
+<input type="text" id="nm" placeholder="Pick a nickname" value="${esc(S.name)}" maxlength="20" autocomplete="off">
+<h2>Your high school <span style="font-weight:500;color:var(--muted)">(optional)</span></h2>
+<input type="text" id="sc" placeholder="So we can find alumni from your school" value="${esc(S.school)}" maxlength="40" autocomplete="off">
+<h2>What grade are you in?</h2>
+<div class="chips">${[9,10,11,12].map(g=>`<button class="chip ${S.grade===g?"on":""}" data-a="grade" data-v="${g}">Grade ${g}</button>`).join("")}</div>
+<h2>What sounds like you? <span style="font-weight:500;color:var(--muted)">(optional)</span></h2>
+<div class="chips">${INTERESTS.map(i=>`<button class="chip ${S.interests.includes(i[1])?"on":""}" data-a="interest" data-v="${i[1]}">${i[0]}</button>`).join("")}</div>
+<button class="btn" data-a="start">Let's go →</button>
+<p class="demo">Demo version. Content is sample data, not verified advice. A counselor should confirm real requirements.</p>
+</main>`;}
+
+function vSpark(){const sug=S.interests;return header()+`<main>
+<div class="why" style="margin:0 0 4px;font-weight:700;color:var(--teal)">STEP 1 · DISCOVER A FUTURE GOAL</div>
+<h1>What future are you curious about?</h1>
+<p class="sub">Type a dream, a job, or something you love. Or tap one below.</p>
+<input type="text" id="goal" placeholder="e.g. I like helping people fix their computers" autocomplete="off">
+<button class="btn" data-a="goalgo">Find my paths</button>
+${S.sparkMsg?`<div class="fb ok">${esc(S.sparkMsg)}</div>`:""}
+<h2>Jobs near you right now</h2>
+<p class="sub">Real jobs in Baltimore County. Tap one to see the ladder up.</p>
+${JOBS.map((j,i)=>`<div class="card" data-a="job" data-v="${i}" style="cursor:pointer"><div style="display:flex;justify-content:space-between;gap:8px"><b style="color:var(--navy)">${j.t}</b><span class="why" style="margin:0;white-space:nowrap">${j.n.toLocaleString()} jobs</span></div><div class="pb"><i style="width:${j.n/10732*100}%"></i></div><div class="why" style="margin:0">${j.hs}% of U.S. workers in this job have a high school diploma as their highest education${j.path?' · <b style="color:var(--teal)">Ladder ready →</b>':""}</div></div>`).join("")}
+<div class="src">Sources: Baltimore County 2025 Q2 Economic Indicators (Lightcast, 2024 jobs); U.S. Bureau of Labor Statistics (2023–24).</div>
+<h2>Or explore</h2>
+${Object.values(PATHS).map(p=>`<div class="card pcard ${sug.includes(p.id)?"sel":""}" data-a="pick" data-v="${p.id}"><div class="em">${p.emoji}</div><div><b>${p.title}${sug.includes(p.id)?'<span class="badge">For you</span>':""}</b><small>${p.pitch}</small></div></div>`).join("")}
+<button class="btn alt" data-a="surprise">🎲 Surprise me</button>
+<p class="demo">In the full app, AI reads what you type and maps it to verified pathways. This demo has 4 sample paths.</p>
+</main>`;}
+
+/* ---------- Journey strip (the 5 steps) ---------- */
+function journey(){const anyT=Object.values(S.tdone).some(Boolean),anyA=Object.values(S.done).some(Boolean);
+ const st=[["Discover","🎯",!!S.path,null],["Explore","🧭",!!(S.seen.route||S.seen.people),"explore:route"],["Compare","⚖️",!!S.seen.compare,"explore:compare"],["Plan","🗺️",!!(S.seen.plan||anyT),"plan"],["Today","✅",anyA,"today"]];
+ const nxt=st.findIndex(s=>!s[2]);
+ return `<div class="jr">${st.map((s,i)=>`<div class="js ${s[2]?"done":i===nxt?"next":""}" ${s[3]?`data-a="jstep" data-v="${s[3]}"`:""}><div class="jd">${s[2]?"✓":s[1]}</div><div class="jl">${s[0]}</div></div>`).join('<div class="jline"></div>')}</div>`;}
+
+/* ---------- STEP 5 · TODAY ---------- */
+function vToday(){
+ if(Q)return header()+`<main><button class="back" data-a="qback">‹ Back to Today</button>${Q.kind==="quiz"?renderQuiz():renderScn()}</main>`;
+ const tk=curTrack(),A=APPLY[tk],all=tasks();const g=S.grade;const st=all.filter(t=>t.stage===g);const sd=st.filter(t=>S.tdone[t.id]).length;
+ const dl=nextDeadline(A);const stage=STAGES.find(x=>x[0]===g);
+ const nextTasks=all.filter(t=>t.stage>=g&&!S.tdone[t.id]).sort((a,b)=>a.stage-b.stage||seasonRank(a)-seasonRank(b)).slice(0,2);
+ const acts=weekActions();const allDone=acts.every(a=>S.done[dkey(a.idx)]);
+ const qk=!S.qDone[S.path+":quiz"]?"quiz":!S.qDone[S.path+":scn"]?"scn":"quiz";const q=P()[qk];
+ let h=header()+`<main>${journey()}
+<div class="card navy"><div style="color:var(--gold);font-weight:800;font-size:12px;letter-spacing:1px">${stage[1].toUpperCase()} GRADE · ${stage[2].toUpperCase()}</div>
+<div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:4px"><b style="font-size:18px">Your plan this year</b><span style="color:var(--gold);font-weight:800">${sd}/${st.length}</span></div>
+<div class="pb" style="background:rgba(255,255,255,.2)"><i style="width:${st.length?Math.max(sd/st.length*100,3):3}%"></i></div>
+<div style="font-size:13px;color:#C8D0E0">Next milestone: ${dl.label} · ${dl.date} · ${dl.days.toLocaleString()} days</div></div>
+<h2>This week <span class="why" style="font-weight:500">· Week ${S.week+1}</span></h2>`;
+ h+=acts.map(a=>{const on=S.done[dkey(a.idx)];return `<div class="card row"><div class="check ${on?"on":""}" data-a="act" data-v="${a.idx}">${on?"✓":""}</div><div><div style="font-size:17px;font-weight:700;color:var(--navy)">${a.t}</div><div class="why">Why: ${a.why}</div><span class="skill">${SK[a.skill][0]} ${SK[a.skill][1]} +10</span></div></div>`;}).join("");
+ if(allDone){const R=S.reflect||{};h+=`<div class="card navy"><b style="font-size:18px">🎉 Week complete! Quick check-in</b><div style="margin-top:8px">How did it feel?</div>
+<div class="chips">${[["😀","great"],["🙂","ok"],["😕","hard"]].map(m=>`<button class="chip ${R.mood===m[1]?"on":""}" style="${R.mood===m[1]?"background:var(--gold);color:var(--navy);border-color:var(--gold)":""}" data-a="mood" data-v="${m[1]}">${m[0]}</button>`).join("")}</div>
+${R.mood?`<div style="margin-top:6px">Anything get in the way?</div><div class="chips">${[["time","⏰ Time"],["motivation","😴 Motivation"],["transport","🚌 Getting around"],["how","🤷 Didn't know how"],["other","💭 Other"]].map(b=>`<button class="chip ${R.block===b[0]?"on":""}" style="${R.block===b[0]?"background:var(--gold);color:var(--navy);border-color:var(--gold)":""}" data-a="block" data-v="${b[0]}">${b[1]}</button>`).join("")}</div>`:""}
+${R.mood&&R.block?`<div class="fb good" style="color:var(--ink)">${R.mood==="great"?"Love that. Keep the momentum.":R.mood==="ok"?"Solid week. Small steps add up.":"That's okay. Hard weeks happen."} ${BLOCK[R.block]}</div><button class="btn" data-a="nextweek">Start next week →</button>`:""}
+</div>`;}
+ h+=`<h2>Next in your plan</h2><div class="card" style="padding-top:6px;padding-bottom:6px">${nextTasks.length?nextTasks.map(tRow).join(""):"<div style='padding:8px 0'>You finished the plan! 🎉</div>"}<button class="btn ghost" data-a="tab" data-v="plan">See full plan →</button></div>
+<h2>Try it · 5 minutes</h2><div class="card pcard" data-a="startq" data-v="${qk}"><div class="em">${qk==="quiz"?"🧮":"🎬"}</div><div><b>${q.title}${S.qDone[S.path+":"+qk]?'<span class="badge">Done</span>':""}</b><small>${qk==="quiz"?"Taste the Future · math you'd use on the job":"A Day in the Life · make the call"}</small></div></div></main>`;
+ return h;}
+function renderQuiz(){const q=P().quiz;return `<h1>${q.title}</h1><p class="sub" style="font-size:17px;color:var(--ink)">${q.q}</p>${q.opts.map((o,i)=>`<button class="opt ${Q.pick!=null?(i===q.ans?"good":(i===Q.pick?"bad":"")):""}" ${Q.pick!=null?"disabled":""} data-a="qpick" data-v="${i}">${o}</button>`).join("")}${Q.pick!=null?`<div class="fb ${Q.pick===q.ans?"good":"ok"}">${Q.pick===q.ans?"Correct! ":"Not quite. "}${q.why}</div><button class="btn" data-a="qback">Done</button>`:""}`;}
+function renderScn(){const q=P().scn;return `<h1>${q.title}</h1><p class="sub" style="font-size:17px;color:var(--ink)">${q.q}</p>${q.opts.map((o,i)=>`<button class="opt ${Q.pick!=null&&i===Q.pick?(o.good?"good":"bad"):""}" ${Q.pick!=null?"disabled":""} data-a="qpick" data-v="${i}">${o.t}</button>`).join("")}${Q.pick!=null?`<div class="fb ${q.opts[Q.pick].good?"good":"ok"}">${q.opts[Q.pick].fb}</div><button class="btn" data-a="qback">Done</button>`:""}`;}
+
+/* ---------- STEPS 2-3 · EXPLORE (route / compare / people) ---------- */
+function vExplore(){const seg=S.xseg||"route";markSeen(seg);
+ const segs=[["route","🗺️ Route"],["compare","⚖️ Compare"],["people","👥 People"]];
+ const body=seg==="route"?routeBody():seg==="compare"?compareBody():peopleBody();
+ return header()+`<main><div class="chips" style="margin-top:0">${segs.map(x=>`<button class="chip ${seg===x[0]?"on":""}" data-a="xseg" data-v="${x[0]}">${x[1]}</button>`).join("")}</div>${body}</main>`;}
+
+function routeBody(){const p=P();const r=p.routes[S.route];return `
+<div class="why" style="margin:6px 0 2px;font-weight:700;color:var(--teal)">STEP 2 · EXPLORE REAL-WORLD PATHWAYS</div>
+${p.ladder?`<div class="card navy"><b>${p.ladderTitle||"📈 The local ladder · Baltimore County"}</b>${p.ladder.map((l,i)=>`${i?'<div style="color:var(--gold);font-weight:800;margin-top:4px">⬆</div>':""}<div style="display:flex;justify-content:space-between;gap:8px;margin-top:8px"><b>${l.t}</b><span style="white-space:nowrap;color:var(--gold)">${l.pay?"$"+l.pay.toLocaleString()+" median":l.n.toLocaleString()+" jobs · "+l.g}</span></div><div style="font-size:12px;color:#C8D0E0">${l.edu||l.hs+"% of U.S. workers here have a high school diploma as their highest education"}</div>`).join("")}${p.ladderNote?`<div style="font-size:11px;color:#C8D0E0;margin-top:10px;line-height:1.4">${p.ladderNote}</div>`:""}</div>`:""}
+<div class="chips">${p.routes.map((x,i)=>`<button class="chip ${i===S.route?"on":""}" data-a="route" data-v="${i}">${x.name}</button>`).join("")}</div>
+<div class="card soft"><b>${r.name}</b> <span class="badge">${r.tag}</span><div class="why">${r.fit}</div></div>
+<div class="rail">${r.nodes.map(n=>`<div class="node"><div class="dot">${n.e}</div><details><summary>${n.t}</summary><p>${n.d}</p><div class="src">${n.src}</div></details></div>`).join("")}</div>
+<details style="margin-top:14px"><summary>🔁 What this route asks of you today</summary>${p.req.map(x=>`<p style="margin:8px 0 0"><b style="color:var(--navy)">${x[0]}</b><br><span style="color:var(--muted)">→ ${x[1]}</span></p>`).join("")}</details>
+<button class="btn" data-a="xseg" data-v="compare">Compare routes →</button>
+<p class="demo">Sample data. In the full app, every stop shows a verified source and date.</p>`;}
+
+function compareBody(){const p=P();return `
+<div class="why" style="margin:6px 0 2px;font-weight:700;color:var(--teal)">STEP 3 · COMPARE OPPORTUNITIES</div>
+<p class="sub">No route is "better." Pick what fits your life.</p>
+${p.routes.map((r,i)=>`<div class="card ${i===S.route?"sel":""}"><b style="font-size:18px;color:var(--navy)">${r.name}</b> <span class="badge">${r.tag}</span>
+<div class="kv"><b>Time</b><span>${r.time}</span></div><div class="kv"><b>Cost</b><span>${r.cost}</span></div><div class="kv"><b>Good fit if</b><span>${r.fit}</span></div><div class="kv"><b>Hard parts</b><span>${r.hard}</span></div>
+<button class="btn alt" data-a="chooseRoute" data-v="${i}">${i===S.route?"✓ My route":"Choose this route"}</button></div>`).join("")}
+<h2>${p.credLabels[0]} vs. ${p.credLabels[1].toLowerCase()}</h2><p class="sub">These are different things. Knowing the difference saves time and money.</p>
+${[0,1].map(g=>`<div class="why" style="font-weight:700;color:var(--navy);margin:10px 0 4px">${g?"📈":"🧾"} ${p.credLabels[g]}</div>${p.creds[g].map(c=>`<details style="margin:6px 0"><summary>${c.t}</summary><p>${c.d}</p></details>`).join("")}`).join("")}
+<button class="btn" data-a="tab" data-v="plan">Build my plan →</button>
+<p class="demo">Sample ranges, not verified numbers. Rules change and vary by place. Always confirm with the official agency or school.</p>`;}
+
+function peopleBody(){const all=STORIES[S.path];const f=S.pfilter;const sch=S.school||"Your high school";
+ const list=all.filter(x=>f==="all"||(f==="school"&&x.sameSchool)||(f==="route"&&x.route===S.route));
+ const flt=[["all","Everyone"],["school","Same school"],["route","My route"]];
+ return `<div class="why" style="margin:6px 0 2px;font-weight:700;color:var(--teal)">STEP 2 · PEOPLE WHO DID IT</div>
+<p class="sub">Journeys from people who started where you are. Match by school, route, and starting point.</p>
+<div class="chips">${flt.map(x=>`<button class="chip ${f===x[0]?"on":""}" data-a="pf" data-v="${x[0]}">${x[1]}</button>`).join("")}</div>
+${list.length?list.map(x=>`<div class="card"><div class="row"><div style="font-size:40px;line-height:1">${x.em}</div><div><b style="font-size:18px;color:var(--navy)">${x.name}</b><div class="why" style="margin:0">${x.cls}${x.sameSchool?" · "+esc(sch):""}</div></div></div>
+<div style="margin:8px 0 4px">${x.sameSchool?'<span class="badge" style="margin:0 6px 0 0">Same school</span>':""}${x.route===S.route?'<span class="badge" style="margin:0 6px 0 0;background:var(--teal);color:#fff">Your route</span>':""}${x.real?'<span class="badge" style="margin:0;background:#2E7D32;color:#fff">Real story</span>':'<span class="badge" style="margin:0;background:#E3E3E3;color:#555">Sample story</span>'}</div>
+<div class="why"><b>Starting point:</b> ${x.start}</div>
+<div style="margin:8px 0">${x.steps.map((st,i)=>(i?'<span style="color:var(--gold);font-weight:800"> → </span>':"")+`<span class="stp">${st}</span>`).join("")}</div>
+${x.quote?`<div class="fb good" style="color:var(--ink)">“${x.quote}”</div>`:""}
+${x.tip?`<div class="why">💡 <b>Tip:</b> ${x.tip}</div>`:""}
+${x.ask?`<div class="fb good" style="color:var(--ink)">💬 <b>Ask me:</b> “${x.ask}”</div>`:""}
+<div style="display:flex;gap:8px"><button class="btn alt" style="margin-top:10px" data-a="ask" data-v="${x.id}">💬 Ask ${x.name.split(" ")[0]}</button><button class="btn alt" style="margin-top:10px;width:auto;padding:14px 18px" data-a="save" data-v="${x.id}">${S.saved[x.id]?"💛":"🤍"}</button></div></div>`).join(""):`<div class="card soft">No matches yet for this filter. Try Everyone.</div>`}
+<p class="demo">Stories marked Sample are fictional examples. In the full app: alumni who opt in, plus published profiles and interviews. Intros go through a counselor.</p>`;}
+
+/* ---------- STEP 4 · PLAN (one roadmap: school + applications) ---------- */
+function vPlan(){markSeen("plan");const tk=curTrack(),A=APPLY[tk];const g=S.planGrade||S.grade;
+ const all=tasks();const dn=all.filter(t=>S.tdone[t.id]).length,pct=Math.round(dn/all.length*100);const dl=nextDeadline(A);
+ const st=all.filter(t=>t.stage===g);const sd=st.filter(t=>S.tdone[t.id]).length;
+ const ord=st.map((t,i)=>({t,i})).sort((a,b)=>(!!S.tdone[a.t.id]-!!S.tdone[b.t.id])||seasonRank(a.t)-seasonRank(b.t)||a.i-b.i).map(x=>x.t);
+ const showAll=!!S.planAll[g];const shown=showAll?ord:ord.slice(0,6);
+ let lastSeason=null;const rows=shown.map(t=>{let hd="";if(t.season&&t.season!==lastSeason){hd=`<div class="why" style="font-weight:800;color:var(--teal);margin:12px 0 0;text-transform:uppercase;letter-spacing:.5px">${t.season}</div>`;}lastSeason=t.season;return hd+tRow(t);}).join("");
+ const toolsOpen=S.toolsOpen===null?S.grade>=11:S.toolsOpen;const portalsDone=A.portals.filter((_,i)=>S.portals[tk+":"+i]).length;const progN=Object.values(S.progs).reduce((a,b)=>a+b.length,0);
+ return header()+`<main>
+<div class="why" style="margin:0 0 6px;font-weight:700;color:var(--teal)">STEP 4 · BUILD AN ACTIONABLE PLAN</div>
+<div class="card navy" style="margin-top:0"><div style="display:flex;justify-content:space-between;align-items:baseline"><b style="font-size:18px">Road to my goal</b><span style="color:var(--gold);font-weight:800;font-size:20px">${pct}%</span></div>
+<div class="pb" style="background:rgba(255,255,255,.2)"><i style="width:${Math.max(pct,2)}%"></i></div>
+<div style="font-size:13px;color:#C8D0E0">Next: ${dl.label} · ${dl.date} (${dl.days.toLocaleString()} days). Typical timeline, so check each school or program.</div></div>
+<div class="chips" style="margin:10px 0 0"><button class="chip" data-a="cycletrack" style="font-size:13px;padding:7px 12px">Plan for: <b>${TRACKS[tk]}</b> ⟳</button></div>
+<div class="chips">${STAGES.map(x=>`<button class="chip ${x[0]===g?"on":""}" data-a="pg" data-v="${x[0]}">${x[1]}${x[0]===S.grade?" ★":""}</button>`).join("")}</div>
+<div class="card" style="padding-top:12px"><div style="display:flex;justify-content:space-between;align-items:baseline"><b style="color:var(--navy);font-size:17px">${g===13?"After graduation":g+"th grade"} · ${STAGES.find(x=>x[0]===g)[2]}</b><span class="why" style="margin:0">${sd}/${st.length} done</span></div>
+<div class="pb"><i style="width:${st.length?sd/st.length*100:0}%"></i></div>
+${rows}
+${ord.length>6?`<button class="btn ghost" data-a="planall" data-v="${g}">${showAll?"Show fewer":"Show all "+ord.length+" tasks"}</button>`:""}</div>
+<div class="card" style="padding:12px 14px"><div class="row" style="justify-content:space-between;align-items:center;cursor:pointer" data-a="tools"><b style="color:var(--navy)">🧰 Application toolkit</b><span class="why" style="margin:0;white-space:nowrap">${toolsOpen?"▾":"▸"}</span></div>
+${toolsOpen?`<div class="why" style="margin:4px 0 0">Shortlist ${progN} · Portals ${portalsDone}/${A.portals.length}</div>
+<div style="margin-top:10px"><b style="color:var(--navy)">Shortlist</b>${[["dream","🌟 Dream"],["fit","🎯 Good fit"],["backup","🛟 Backup"]].map(b=>`<div style="padding:6px 0"><div class="row" style="justify-content:space-between;align-items:center"><span style="font-weight:600">${b[1]}</span><button class="chip" style="padding:6px 14px" data-a="addprog" data-v="${b[0]}">Add</button></div>${S.progs[b[0]].map((n,i)=>`<div class="stp" style="margin:4px 4px 0 0" data-a="rmprog" data-v="${b[0]}:${i}">${esc(n)} ✕</div>`).join("")}</div>`).join("")}</div>
+<div style="margin-top:12px"><b style="color:var(--navy)">Portals</b>${A.portals.map((n,i)=>{const k=tk+":"+i;const on=S.portals[k];return `<div class="row" style="justify-content:space-between;align-items:center;padding:6px 0"><span>${n}</span><button class="chip ${on?"on":""}" style="padding:6px 14px" data-a="portal" data-v="${k}">${on?"Added ✓":"Add"}</button></div>`;}).join("")}</div>
+<div style="margin-top:12px"><b style="color:var(--navy)">Activities</b><div class="why" style="margin:2px 0 8px">Paste what you do, one per line: clubs, jobs, caring for family, volunteering.</div>
+<textarea id="acts" placeholder="Babysit my little brother after school&#10;Cashier at corner store, 10 hrs/week&#10;Bake for church sale&#10;Basketball team">${esc(S.actsText)}</textarea>
+<button class="btn alt" data-a="sortacts">Sort my activities</button>
+${S.actsOut?`<div style="margin-top:8px">${S.actsOut.length?S.actsOut.slice(0,10).map((a,i)=>`<div class="row" style="padding:6px 0;border-top:1px solid var(--soft)"><b style="color:var(--gold);min-width:22px">${i+1}</b><div><div style="font-size:15px">${esc(a.t)}</div><span class="stp">${a.c}</span></div></div>`).join(""):"<div class='why'>Add at least one activity.</div>"}<div class="why" style="margin-top:8px">Jobs and family responsibilities count. Demo sorter uses simple keyword rules. The full app uses AI.</div></div>`:""}</div>`:""}</div>
+<p class="demo">Typical timelines, not official. Always confirm dates and requirements with each school, program, or employer.</p></main>`;}
+
+/* ---------- ME ---------- */
+function vMe(){const p=P();const sk=Object.keys(SK);const nx=tasks().filter(t=>!S.tdone[t.id]).sort((a,b)=>(a.stage<S.grade?1:0)-(b.stage<S.grade?1:0)||a.stage-b.stage||seasonRank(a)-seasonRank(b))[0];const next=nx?nx.t:"You finished the plan!";
+const dots=x=>`<div class="dots">${[0,1,2,3,4].map(i=>`<i class="${S.xp[x]>=(i+1)*20?"on":""}"></i>`).join("")}</div>`;
+return header()+`<main><h1>My Skill Tree</h1><p class="sub">Every real step lights up a skill. Skills follow you if your goal changes.</p>
+${sk.map(k=>`<div class="card"><b style="color:var(--navy)">${SK[k][0]} ${SK[k][1]}</b> <span class="why">${S.xp[k]} pts</span>${dots(k)}</div>`).join("")}
+<h2>My Path card</h2>
+<div class="share"><div style="color:var(--gold);font-weight:800;font-size:12px;letter-spacing:1px">STUDENT LIKE ME</div><h3>${esc(S.name||"Me")} → ${p.emoji} ${p.title}</h3>
+<div class="m">ROUTE</div><div>${p.routes[S.route].name}</div><div class="m">NEXT STEP</div><div>${next}</div><div class="m">SKILLS</div>
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">${sk.map(k=>`<div>${SK[k][0]}<div class="dots" style="margin-top:2px">${[0,1,2].map(i=>`<i style="width:10px;height:10px" class="${S.xp[k]>=(i+1)*20?"on":""}"></i>`).join("")}</div></div>`).join("")}</div></div>
+<p class="demo" style="margin-top:6px">Take a screenshot to show a family member, teacher, or counselor.</p>
+<h2>💌 Future Me letter</h2><p class="sub">Write to yourself in 12th grade. What do you hope you'll have done?</p>
+<textarea id="letter" placeholder="Dear future me...">${esc(S.letter)}</textarea>
+<button class="btn alt" data-a="saveletter">Save letter</button>
+<h2>Change my mind</h2><p class="sub">Switching goals is not failing. Skills and good habits carry over.</p>
+<button class="btn alt" data-a="pivot">🔄 Explore a different goal</button>
+<button class="btn ghost" data-a="reset">Reset demo data</button></main>`;}
+
+function render(){
+ let h;
+ if(S.screen==="welcome")h=vWelcome();
+ else if(!S.path)h=vSpark();
+ else{h={today:vToday,explore:vExplore,plan:vPlan,me:vMe}[S.tab]();h+=tabbar();}
+ document.getElementById("app").innerHTML=h;
+}
+function draw(top){render();if(top)scrollTo(0,0);}
+
+/* ============ ACTIONS ============ */
+document.addEventListener("click",e=>{
+ const el=e.target.closest("[data-a]");if(!el)return;
+ const a=el.dataset.a,v=el.dataset.v;
+ const nm=document.getElementById("nm");if(nm)S.name=nm.value.trim();
+ const sc=document.getElementById("sc");if(sc)S.school=sc.value.trim();
+ const ac=document.getElementById("acts");if(ac)S.actsText=ac.value;
+ const keep=scrollY;
+ const stay=()=>{save();render();scrollTo(0,keep);};
+ switch(a){
+  case "grade":S.grade=+v;S.planGrade=+v;stay();break;
+  case "interest":{const i=S.interests.indexOf(v);i>=0?S.interests.splice(i,1):S.interests.push(v);stay();break;}
+  case "start":S.screen="app";if(!S.name)S.name="Friend";S.planGrade=S.grade;save();draw(true);break;
+  case "goalgo":{const t=document.getElementById("goal").value;const m=matchPath(t);if(m){choose(m);}else{S.sparkMsg=t.trim()?"I don't have a sample path for that yet. Try one below. The full app would build one from verified sources.":"Type something you're curious about, or tap a path below.";save();render();}break;}
+  case "pick":choose(v);break;
+  case "job":{const j=JOBS[+v];if(j.path)choose(j.path);else toast("Ladder for this job is coming soon (demo)");break;}
+  case "surprise":{const ids=Object.keys(PATHS);choose(ids[Math.floor(Math.random()*ids.length)]);toast("🎲 Surprise! Take a look.");break;}
+  case "tab":S.tab=v;Q=null;save();draw(true);break;
+  case "jstep":{const [t,s]=v.split(":");S.tab=t;if(s)S.xseg=s;Q=null;save();draw(true);break;}
+  case "xseg":S.xseg=v;save();draw(true);break;
+  case "route":S.route=+v;S.track=null;stay();break;
+  case "chooseRoute":S.route=+v;S.track=null;S.xseg="route";save();draw(true);toast("Route selected");break;
+  case "track":S.track=v;stay();break;
+  case "cycletrack":{const ks=Object.keys(TRACKS);S.track=ks[(ks.indexOf(curTrack())+1)%ks.length];stay();break;}
+  case "pg":S.planGrade=+v;stay();break;
+  case "planall":S.planAll[v]=!S.planAll[v];stay();break;
+  case "tools":{const cur=S.toolsOpen===null?S.grade>=11:S.toolsOpen;S.toolsOpen=!cur;stay();break;}
+  case "ttoggle":{S.tdone[v]=!S.tdone[v];if(S.tdone[v]&&!S.xpGiven[v]){S.xpGiven[v]=true;const t=tasks().find(x=>x.id===v);if(t){const sk=TYPE_SKILL[t.type]||"prepare";award(sk,10);toast(SK[sk][1]+" +10 ⭐");}burst(el,["✨","⭐"]);}stay();break;}
+  case "portal":S.portals[v]=!S.portals[v];stay();break;
+  case "addprog":{const n=prompt("Add a school, program, or employer");if(n&&n.trim()){S.progs[v].push(n.trim().slice(0,40));stay();}break;}
+  case "rmprog":{const [b,i]=v.split(":");if(confirm("Remove "+S.progs[b][+i]+"?")){S.progs[b].splice(+i,1);stay();}break;}
+  case "sortacts":{const lines=S.actsText.split(/\n+/).map(x=>x.trim()).filter(Boolean);const out=lines.map(t=>{let c="Other",r=CATS.length;CATS.forEach((cat,idx)=>{if(r===CATS.length&&cat[1].test(t)){c=cat[0];r=idx;}});return {t,c,r};});out.sort((a,b)=>a.r-b.r);S.actsOut=out;stay();break;}
+  case "pf":S.pfilter=v;stay();break;
+  case "ask":toast("💬 Intro request sent through your counselor (demo)");break;
+  case "save":S.saved[v]=!S.saved[v];stay();if(S.saved[v])toast("Saved to your inspiration list");break;
+  case "act":{const acts=weekActions();const x=acts.find(q=>q.idx===+v);const k=dkey(x.idx);if(!S.done[k]){S.done[k]=true;award(x.skill,10);stay();const n=document.querySelector(`[data-a="act"][data-v="${v}"]`);burst(n);toast(SK[x.skill][1]+" +10 ⭐");}break;}
+  case "mood":S.reflect=Object.assign(S.reflect||{},{mood:v});stay();break;
+  case "block":S.reflect=Object.assign(S.reflect||{},{block:v});stay();break;
+  case "nextweek":S.week++;S.reflect=null;save();draw(true);burst(null,["🌟","🚀"]);toast("New week unlocked!");break;
+  case "startq":Q={kind:v,pick:null};draw(true);break;
+  case "qback":Q=null;draw(true);break;
+  case "qpick":{const i=+v;Q.pick=i;const q=P()[Q.kind];const key=S.path+":"+Q.kind;const good=Q.kind==="quiz"?i===q.ans:q.opts[i].good;if(!S.qDone[key]){S.qDone[key]=true;award(q.skill,good?15:5);save();}if(good)burst(el);render();scrollTo(0,keep);break;}
+  case "saveletter":S.letter=document.getElementById("letter").value;save();toast("Letter saved 💌");break;
+  case "pivot":{const have=Object.keys(S.xp).filter(k=>S.xp[k]>0).map(k=>SK[k][1]);S.path=null;S.tab="today";S.sparkMsg=have.length?"Your skills still count: "+have.join(", ")+".":"";save();draw(true);break;}
+  case "reset":if(confirm("Erase all demo data on this device?")){localStorage.removeItem("slm");S=fresh();draw(true);}break;
+ }
+});
+function choose(id){S.path=id;S.route=0;S.track=null;S.tab="explore";S.xseg="route";S.sparkMsg="";S.reflect=null;save();draw(true);burst(null,[PATHS[id].emoji,"✨"]);}
+draw();
+</script>
+</body>
+</html>
