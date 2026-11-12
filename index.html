@@ -99,6 +99,8 @@ details p{margin:8px 0 4px;color:var(--ink);line-height:1.45;font-size:15px}
 .js.done .jl,.js.next .jl{color:var(--navy)}
 .jline{flex:1;height:3px;background:var(--soft);margin:0 2px 16px}
 .back{border:0;background:none;color:var(--teal);font-weight:700;font-size:16px;padding:0;margin-bottom:8px;cursor:pointer}
+input[type=date],input[type=time],select{width:100%;border:2px solid var(--soft);border-radius:14px;padding:12px;font-size:16px;font-family:inherit;background:#fff;color:var(--ink);margin-top:8px}
+input[type=text]+input[type=text],input[type=text]+select{margin-top:8px}
 </style>
 </head>
 <body>
@@ -353,10 +355,50 @@ const CATS=[["Leadership",/(captain|president|leader|council|jrotc|robotics|deba
 const INTERESTS=[["🍰 Making & food","baker"],["🩺 Helping people heal","nurse"],["🛡️ Protecting my community","police"],["💻 Fixing tech","it"]];
 const BLOCK={time:"Pick the smallest action and do just that one.",motivation:"Look at your Path Map and remember your why. Even one step counts.",transport:"Choose actions you can do at school or at home.",how:"Ask your counselor or a teacher to walk you through it.",other:"Tell a counselor or a trusted adult. You don't have to solve it alone."};
 
+/* ===== Check-in questions (friendly warm-up, not a graded test). Keyed by the grade whose skills they cover. ===== */
+const CHK={
+8:{q:[
+ {s:"Math",k:"solving equations",q:"Solve: 3x + 5 = 20",o:["x = 3","x = 5","x = 15"],a:1,w:"Subtract 5 from both sides: 3x = 15. Then divide by 3: x = 5."},
+ {s:"Math",k:"percents",q:"A $40 shirt is 25% off. What is the sale price?",o:["$10","$30","$35"],a:1,w:"25% of $40 is $10. $40 − $10 = $30."},
+ {s:"Math",k:"slope",q:"What is the slope of the line through (0, 1) and (2, 5)?",o:["1","2","4"],a:1,w:"Slope = rise ÷ run = (5 − 1) ÷ (2 − 0) = 4 ÷ 2 = 2."},
+ {s:"English",k:"figurative language",q:"\u201cThe sun was a hot coin in the sky.\u201d What is this?",o:["A simile","A metaphor","Personification"],a:1,w:"It says the sun IS a coin, without using like or as. That is a metaphor."},
+ {s:"English",k:"punctuation",q:"Which sentence is punctuated correctly?",o:["Maya who loves computers, fixed the laptop.","Maya, who loves computers, fixed the laptop.","Maya who loves, computers fixed the laptop."],a:1,w:"Extra information in the middle of a sentence is set off with a pair of commas."},
+ {s:"Science",k:"force and motion",q:"Which unit measures force?",o:["Joule","Newton","Watt"],a:1,w:"Force is measured in newtons. A joule measures energy, and a watt measures power."},
+ {s:"Science",k:"ecosystems",q:"In a food web, what do plants do?",o:["Eat animals for energy","Make their own food using sunlight","Break down dead material"],a:1,w:"Plants are producers. They use sunlight to make food (photosynthesis)."}]},
+9:{q:[
+ {s:"Math",k:"factoring",q:"Solve: x² − 5x + 6 = 0",o:["x = 1 or x = 6","x = 2 or x = 3","x = −2 or x = −3"],a:1,w:"Factor it: (x − 2)(x − 3) = 0, so x = 2 or x = 3."},
+ {s:"Math",k:"functions",q:"Which set of (x, y) pairs is NOT a function?",o:["{(1,2), (2,3), (3,4)}","{(1,2), (1,3), (2,4)}","{(1,5), (2,5), (3,5)}"],a:1,w:"In a function, each input has exactly one output. Here the input 1 has two outputs (2 and 3)."},
+ {s:"Math",k:"exponents",q:"Simplify: (2x²)(3x³)",o:["5x⁵","6x⁵","6x⁶"],a:1,w:"Multiply the numbers (2 × 3 = 6) and add the exponents (2 + 3 = 5): 6x⁵."},
+ {s:"English",k:"theme",q:"What is a theme in a story?",o:["A summary of the plot","The central message about life","A description of the main character"],a:1,w:"A theme is the big idea or message the story says about life."},
+ {s:"English",k:"thesis statements",q:"Which is the strongest thesis statement?",o:["Social media is bad.","Schools should start later because teens need more sleep to learn well.","This essay is about school start times."],a:1,w:"A strong thesis makes a clear claim and gives a reason."},
+ {s:"Science",k:"cells",q:"Which part of a cell makes most of its energy?",o:["Nucleus","Mitochondria","Cell wall"],a:1,w:"Mitochondria release energy the cell can use (ATP)."},
+ {s:"Science",k:"DNA",q:"In DNA, adenine (A) pairs with which base?",o:["Guanine (G)","Thymine (T)","Cytosine (C)"],a:1,w:"A pairs with T, and C pairs with G."}]},
+10:{q:[
+ {s:"Math",k:"the Pythagorean theorem",q:"A right triangle has legs of 6 and 8. How long is the hypotenuse?",o:["10","12","14"],a:0,w:"6² + 8² = 36 + 64 = 100, and the square root of 100 is 10."},
+ {s:"Math",k:"angles",q:"What is the sum of the interior angles of a triangle?",o:["90°","180°","360°"],a:1,w:"The three angles of any triangle add up to 180°."},
+ {s:"Math",k:"circles",q:"What is the area of a circle with radius 3? (Area = πr²)",o:["6π","9π","3π"],a:1,w:"π × 3² = 9π. (6π would be the circumference.)"},
+ {s:"English",k:"evidence",q:"What makes evidence strong in an argument?",o:["It is long","It is relevant and from a credible source","It agrees with what you already think"],a:1,w:"Strong evidence directly supports your claim and comes from a trustworthy source."},
+ {s:"English",k:"word choice",q:"Which word fits? \u201cThe new bus schedule will ___ how I get to school.\u201d",o:["affect","effect","effects"],a:0,w:"Affect is usually the verb (to change something). Effect is usually the noun (the result)."},
+ {s:"Science",k:"chemical reactions",q:"A balanced chemical equation shows that...",o:["Atoms are created in the reaction","The same number of each atom is on both sides","The products weigh less than the reactants"],a:1,w:"Mass is conserved. Atoms are rearranged, not created or destroyed."},
+ {s:"Science",k:"acids and bases",q:"A solution has a pH of 3. It is...",o:["Acidic","Neutral","Basic"],a:0,w:"A pH below 7 is acidic, 7 is neutral, and above 7 is basic."}]},
+11:{q:[
+ {s:"Math",k:"exponent rules",q:"What is the value of 2⁵ × 2⁻²?",o:["4","8","32"],a:1,w:"Add the exponents: 2^(5 − 2) = 2³ = 8."},
+ {s:"Math",k:"absolute value",q:"Solve: |x − 3| = 4",o:["x = 7 only","x = 7 or x = −1","x = 1 or x = −7"],a:1,w:"x − 3 = 4 gives x = 7, and x − 3 = −4 gives x = −1."},
+ {s:"Math",k:"functions",q:"If f(x) = x² − 1, what is f(4)?",o:["7","15","16"],a:1,w:"4² − 1 = 16 − 1 = 15."},
+ {s:"English",k:"research sources",q:"Which source is most reliable for a research paper?",o:["A peer-reviewed journal article","An anonymous blog post","A social media post"],a:0,w:"Peer-reviewed articles are checked by experts before they are published."},
+ {s:"English",k:"concise writing",q:"Which is the best revision of: \u201cDue to the fact that it was raining, the game was canceled.\u201d",o:["Because it was raining, the game was canceled.","The game was canceled, due to the fact of rain.","It was raining so that is why the game was canceled."],a:0,w:"Shorter is clearer: \u201cBecause\u201d replaces the wordy \u201cDue to the fact that.\u201d"},
+ {s:"Science",k:"speed",q:"A car travels 60 miles in 2 hours. What is its average speed?",o:["30 mph","60 mph","120 mph"],a:0,w:"Speed = distance ÷ time = 60 ÷ 2 = 30 miles per hour."},
+ {s:"Science",k:"electricity",q:"A 12-volt battery powers a 4-ohm resistor. What is the current? (V = I × R)",o:["3 amps","8 amps","48 amps"],a:0,w:"I = V ÷ R = 12 ÷ 4 = 3 amps."}]}
+};
+const SUBJ=["Math","English","Science"];
+const EV_TYPES=["Exam","Final exam","Quiz","Due","Project","Field trip","Other"];
+const EV_ICON={"Final exam":"🎓","Exam":"📝","Quiz":"❓","Field trip":"🚌","Project":"🛠️","Due":"📥","Other":"📌","Review":"🔁"};
+const MONTHS={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,sept:8,oct:9,nov:10,dec:11};
+
 /* ============ STATE ============ */
-function fresh(){return {xseg:"route",seen:{},tdone:{},xpGiven:{},planAll:{},toolsOpen:null,track:null,portals:{},progs:{dream:[],fit:[],backup:[]},actsText:"",actsOut:null,school:"",pfilter:"all",saved:{},screen:"welcome",tab:"today",name:"",grade:9,interests:[],path:null,route:0,xp:{show_up:0,think:0,communicate:0,experience:0,prepare:0},done:{},qDone:{},week:0,reflect:null,letter:"",planGrade:9,sparkMsg:"",pview:"soon"};}
+function fresh(){return {xseg:"route",seen:{},tdone:{},xpGiven:{},planAll:{},toolsOpen:null,track:null,portals:{},progs:{dream:[],fit:[],backup:[]},actsText:"",actsOut:null,school:"",pfilter:"all",saved:{},screen:"welcome",tab:"today",name:"",grade:9,interests:[],path:null,route:0,xp:{show_up:0,think:0,communicate:0,experience:0,prepare:0},done:{},qDone:{},week:0,reflect:null,letter:"",planGrade:9,sparkMsg:"",pview:"soon",events:[],cards:[],chk:null,sylText:"",clsName:""};}
 let S;try{S=Object.assign(fresh(),JSON.parse(localStorage.getItem("slm")||"{}"));}catch(e){S=fresh();}
-if(S.tab==="path")S.tab="explore";else if(["week","quest"].includes(S.tab))S.tab="today";else if(!["today","explore","plan","me"].includes(S.tab))S.tab="today";
+if(S.tab==="path")S.tab="explore";else if(["week","quest"].includes(S.tab))S.tab="today";else if(!["today","explore","plan","school","me"].includes(S.tab))S.tab="today";
 if(S.planGrade<9||S.planGrade>13)S.planGrade=S.grade;
 function save(){try{localStorage.setItem("slm",JSON.stringify(S));}catch(e){}}
 let Q=null; // active quest (not saved)
@@ -407,16 +449,52 @@ function upcoming(){
   list.forEach((t,i)=>out.push({id:t.id,t:t.t,type:t.type,date:new Date(a+(b-a)*Math.pow((i+1)/(list.length+1),si===0?1.4:1)),kind:"task"}));});
  CHECKPOINTS.forEach((c,i)=>{if(g>=12&&c[3])return;const y=now.getFullYear();let d=new Date(y,c[1]-1,c[2]);if(d<now)d=new Date(y+1,c[1]-1,c[2]);out.push({id:"k:"+i+":"+d.getFullYear(),t:c[0],type:"Check",date:d,kind:"task"});});
  A.deadlines.forEach(dd=>{const d=new Date(gy+dd[3],dd[1]-1,dd[2]);if(d<now)return;if((d-now)/864e5<=548)out.push({id:"d:"+dd[0]+d.getFullYear(),t:dd[0],type:"Deadline",date:d,kind:"deadline"});else far.push({t:dd[0],date:d});});
+ const today0=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+ S.events.forEach(e=>{const d=evDate(e);if(d<today0)return;out.push({id:"e:"+e.id,t:(e.cls?e.cls+": ":"")+e.t,type:e.type,date:d,kind:"event",time:e.time});});
+ if(S.chk&&S.chk.res)S.chk.res.weak.forEach((w,i)=>out.push({id:"r:"+S.chk.set+":"+w.s,t:"Review "+w.s+": "+w.topic,type:"Review",date:new Date(now.getTime()+(5+i*6)*864e5),kind:"task"}));
  out.sort((x,y)=>x.date-y.date);far.sort((x,y)=>x.date-y.date);return {items:out,far};}
 function soonest(){const it=upcoming().items.find(x=>x.kind==="deadline"||!S.tdone[x.id]);if(it){const L=dueLabel(it.date);return {label:it.t,date:L.ds,days:Math.max(L.days,0)};}const d=nextDeadline(APPLY[curTrack()]);return {label:d.label,date:d.date,days:d.days};}
 function uRow(it){const L=dueLabel(it.date);
+ if(it.kind==="event"){const on=S.tdone[it.id];const wd=it.date.toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"});return `<div class="row" style="padding:8px 0;border-top:1px solid var(--soft)"><div class="check ${on?"on":""}" style="width:26px;height:26px;border-width:2px" data-a="ttoggle" data-v="${it.id}">${on?"✓":""}</div><div><div style="font-size:15px;line-height:1.35;${on?"color:var(--muted);text-decoration:line-through":""}">${esc(it.t)}</div><span class="stp" style="margin-top:3px">${EV_ICON[it.type]||"📌"} ${it.type} · ${wd}${it.time?" · "+it.time:""} · ${L.txt}</span></div></div>`;}
  if(it.kind==="deadline")return `<div class="row" style="padding:8px 0;border-top:1px solid var(--soft)"><div style="font-size:22px;width:26px;text-align:center">📅</div><div><div style="font-size:15px;line-height:1.35;font-weight:700;color:var(--navy)">${it.t}</div><span class="stp" style="margin-top:3px;background:var(--gold);color:var(--navy)">Deadline · ${L.ds} · ${L.txt}</span></div></div>`;
  const on=S.tdone[it.id];return `<div class="row" style="padding:8px 0;border-top:1px solid var(--soft)"><div class="check ${on?"on":""}" style="width:26px;height:26px;border-width:2px" data-a="ttoggle" data-v="${it.id}">${on?"✓":""}</div><div><div style="font-size:15px;line-height:1.35;${on?"color:var(--muted);text-decoration:line-through":""}">${it.t}</div><span class="stp" style="margin-top:3px">By ${L.ds} · ${L.txt}</span></div></div>`;}
 function downloadICS(){const items=upcoming().items.filter(x=>x.kind==="deadline"||!S.tdone[x.id]).filter(x=>(x.date-new Date())/864e5<=400);
  const pad=n=>String(n).padStart(2,"0"),fmt=d=>d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate());
  const L=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Student Like Me//EN"];
- items.forEach((it,i)=>{const e=new Date(it.date.getTime()+86400000);L.push("BEGIN:VEVENT","UID:slm-"+i+"-"+fmt(it.date)+"@studentlikeme","DTSTAMP:"+fmt(new Date())+"T000000Z","DTSTART;VALUE=DATE:"+fmt(it.date),"DTEND;VALUE=DATE:"+fmt(e),"SUMMARY:"+(it.kind==="deadline"?"DEADLINE: ":"")+it.t.replace(/[,;\n]/g," ")+" (typical, confirm)","END:VEVENT");});
+ items.forEach((it,i)=>{const e=new Date(it.date.getTime()+86400000);L.push("BEGIN:VEVENT","UID:slm-"+i+"-"+fmt(it.date)+"@studentlikeme","DTSTAMP:"+fmt(new Date())+"T000000Z","DTSTART;VALUE=DATE:"+fmt(it.date),"DTEND;VALUE=DATE:"+fmt(e),"SUMMARY:"+(it.kind==="deadline"?"DEADLINE: ":"")+it.t.replace(/[,;\n]/g," ")+(it.kind==="event"?"":" (typical, confirm)"),"END:VEVENT");});
  L.push("END:VCALENDAR");const b=new Blob([L.join("\r\n")],{type:"text/calendar"});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="student-like-me.ics";document.body.appendChild(a);a.click();a.remove();toast("📅 "+items.length+" dates ready for your calendar");}
+
+/* ===== Class dates: manual, pasted syllabus, or calendar file (.ics). Everything stays on this device. ===== */
+const pad2=n=>String(n).padStart(2,"0");
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function fmtTime(t){if(!t)return "";const [h,m]=t.split(":").map(Number);return ((h%12)||12)+":"+pad2(m)+" "+(h>=12?"PM":"AM");}
+function classify(t){const x=t.toLowerCase();if(/final (exam|test)|\bfinals?\b/.test(x))return "Final exam";if(/exam|midterm|\btest\b/.test(x))return "Exam";if(/quiz/.test(x))return "Quiz";if(/field trip|\btrip\b|museum|excursion/.test(x))return "Field trip";if(/project|presentation|portfolio/.test(x))return "Project";if(/\bdue\b|submit|essay|paper|assignment|homework|turn in/.test(x))return "Due";return "Other";}
+function evDate(e){const [y,m,d]=e.date.split("-").map(Number);return new Date(y,m-1,d);}
+function addEvents(arr){const have=new Set(S.events.map(e=>e.t+"|"+e.date));arr.forEach(e=>{if(have.has(e.t+"|"+e.date))return;have.add(e.t+"|"+e.date);e.id=Date.now().toString(36)+Math.random().toString(36).slice(2,6);S.events.push(e);});if(S.events.length>300)S.events=S.events.slice(-300);save();}
+function parseDates(text,cls){const out=[],now=new Date(),today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+ const re1=/\b(jan|feb|mar|apr|may|jun|jul|aug|sept|sep|oct|nov|dec)[a-z]*\.?\s+(\d{1,2})(?:st|nd|rd|th)?(?:,?\s+(\d{4}))?/i,re2=/\b(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?\b/,reT=/\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b/i;
+ text.split(/\r?\n/).forEach(line=>{const L=line.trim();if(L.length<4)return;let m,mo,d,y=null;
+  if(m=L.match(re1)){mo=MONTHS[m[1].toLowerCase()];d=+m[2];y=m[3]?+m[3]:null;}
+  else if(m=L.match(re2)){mo=+m[1]-1;d=+m[2];y=m[3]?(+m[3]<100?2000+ +m[3]:+m[3]):null;}
+  else return;
+  if(!(mo>=0&&mo<=11&&d>=1&&d<=31))return;
+  let dt=new Date(y||now.getFullYear(),mo,d);if(!y&&dt<today)dt=new Date(now.getFullYear()+1,mo,d);if(dt<today)return;
+  const tm=L.match(reT);const time=tm?((+tm[1])+":"+(tm[2]||"00")+" "+tm[3].toUpperCase()):"";
+  let title=L.replace(re1,"").replace(re2,"").replace(reT,"").replace(/^[\s\-–:•*,.]+|[\s\-–:•*,.]+$/g,"");if(title.length<3)title=L.slice(0,60);
+  out.push({t:title.slice(0,80),date:dt.getFullYear()+"-"+pad2(dt.getMonth()+1)+"-"+pad2(dt.getDate()),time,type:classify(L),cls:cls||""});});
+ return out.slice(0,200);}
+function parseICS(text,cls){const t=text.replace(/\r?\n[ \t]/g,"");const out=[],now=new Date(),today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+ t.split("BEGIN:VEVENT").slice(1).forEach(b=>{const sm=b.match(/SUMMARY[^:\n]*:([^\n\r]*)/),dm=b.match(/DTSTART[^:\n]*:(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})?(Z)?)?/);if(!sm||!dm)return;
+  let dt,time="";if(dm[4]){dt=dm[7]?new Date(Date.UTC(+dm[1],+dm[2]-1,+dm[3],+dm[4],+dm[5])):new Date(+dm[1],+dm[2]-1,+dm[3],+dm[4],+dm[5]);const h=dt.getHours();time=((h%12)||12)+":"+pad2(dt.getMinutes())+" "+(h>=12?"PM":"AM");}else dt=new Date(+dm[1],+dm[2]-1,+dm[3]);
+  const day=new Date(dt.getFullYear(),dt.getMonth(),dt.getDate());if(day<today)return;
+  const title=sm[1].replace(/\\,/g,",").replace(/\\n/g," ").trim();if(!title)return;
+  out.push({t:title.slice(0,80),date:day.getFullYear()+"-"+pad2(day.getMonth()+1)+"-"+pad2(day.getDate()),time,type:classify(title),cls:cls||""});});
+ return out.slice(0,200);}
+function chkSetFor(mode){const g=S.grade;return mode==="next"?Math.min(g,11):Math.max(g-1,8);}
+function finishChk(){const C=S.chk,set=CHK[C.set];const by={Math:[0,0],English:[0,0],Science:[0,0]},missed={};
+ set.q.forEach((q,i)=>{by[q.s][1]++;if(C.ans[i])by[q.s][0]++;else{(missed[q.s]=missed[q.s]||[]).push(q);if(!S.cards.some(c=>c.q===q.q))S.cards.push({q:q.q,a:q.o[q.a],w:q.w,s:q.s});}});
+ const weak=[];SUBJ.forEach(x=>{const [c,t]=by[x];if(c/t<0.67)weak.push({s:x,topic:[...new Set((missed[x]||[]).map(q=>q.k))].join(", ")});});
+ C.res={by,weak,label:C.mode==="next"?"Ready for "+(C.set+1)+"th grade":"Skills from "+C.set+"th grade"};}
 
 /* ============ FUN ============ */
 function burst(el,em){const r=el?el.getBoundingClientRect():{left:innerWidth/2,top:innerHeight/2,width:0,height:0};const set=em||["🎉","✨","⭐","🥳"];for(let i=0;i<12;i++){const s=document.createElement("div");s.className="pop";s.textContent=set[i%set.length];s.style.left=(r.left+r.width/2)+"px";s.style.top=(r.top+r.height/2)+"px";s.style.setProperty("--dx",(Math.random()*240-120)+"px");s.style.setProperty("--dy",(-Math.random()*200-30)+"px");s.style.setProperty("--r",(Math.random()*360-180)+"deg");document.body.appendChild(s);setTimeout(()=>s.remove(),1000);}}
@@ -425,7 +503,7 @@ function award(skill,n){S.xp[skill]+=n;}
 
 /* ============ VIEWS ============ */
 function header(){const p=P();return `<div class="top"><div><div class="hi">Hi, ${esc(S.name||"friend")} · Grade ${S.grade}</div><div class="goal">${p?p.emoji+" "+p.title:"Pick your spark"}</div></div><div class="xp">⭐ ${total()}</div></div>`;}
-function tabbar(){const t=[["today","🏠","Today"],["explore","🧭","Explore"],["plan","🗺️","Plan"],["me","🌟","Me"]];return `<nav class="tabs">${t.map(x=>`<button class="tab ${S.tab===x[0]?"on":""}" data-a="tab" data-v="${x[0]}"><span>${x[1]}</span>${x[2]}</button>`).join("")}</nav>`;}
+function tabbar(){const t=[["today","🏠","Today"],["explore","🧭","Explore"],["plan","🗺️","Plan"],["school","📚","School"],["me","🌟","Me"]];return `<nav class="tabs">${t.map(x=>`<button class="tab ${S.tab===x[0]?"on":""}" data-a="tab" data-v="${x[0]}"><span>${x[1]}</span>${x[2]}</button>`).join("")}</nav>`;}
 
 function vWelcome(){return `<div class="hero"><h1>Student Like Me</h1><div class="tag">See the future you want.<br>Know what to do today.</div></div>
 <main>
@@ -471,14 +549,15 @@ function vToday(){
  if(Q)return header()+`<main><button class="back" data-a="qback">‹ Back to Today</button>${Q.kind==="quiz"?renderQuiz():renderScn()}</main>`;
  const tk=curTrack(),A=APPLY[tk],all=tasks();const g=S.grade;const st=all.filter(t=>t.stage===g);const sd=st.filter(t=>S.tdone[t.id]).length;
  const dl=soonest();const stage=STAGES.find(x=>x[0]===g);
- const nextTasks=upcoming().items.filter(x=>x.kind==="task"&&!S.tdone[x.id]).slice(0,2);
+ const nextTasks=upcoming().items.filter(x=>x.kind!=="deadline"&&!S.tdone[x.id]).slice(0,2);
  const acts=weekActions();const allDone=acts.every(a=>S.done[dkey(a.idx)]);
  const qk=!S.qDone[S.path+":quiz"]?"quiz":!S.qDone[S.path+":scn"]?"scn":"quiz";const q=P()[qk];
  let h=header()+`<main>${journey()}
 <div class="card navy"><div style="color:var(--gold);font-weight:800;font-size:12px;letter-spacing:1px">${stage[1].toUpperCase()} GRADE · ${stage[2].toUpperCase()}</div>
 <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:4px"><b style="font-size:18px">Your plan this year</b><span style="color:var(--gold);font-weight:800">${sd}/${st.length}</span></div>
 <div class="pb" style="background:rgba(255,255,255,.2)"><i style="width:${st.length?Math.max(sd/st.length*100,3):3}%"></i></div>
-<div style="font-size:13px;color:#C8D0E0">Due next: ${dl.label} · ${dl.date} · ${dl.days.toLocaleString()} days</div></div>
+<div style="font-size:13px;color:#C8D0E0">Due next: ${esc(dl.label)} · ${dl.date} · ${dl.days.toLocaleString()} days</div></div>
+${(!S.chk||!S.chk.res)?`<div class="card pcard" data-a="gochk"><div class="em">🧪</div><div><b>Quick check-in</b><small>7 questions, about 5 minutes. See where you are caught up. Not graded.</small></div></div>`:""}
 <h2>This week <span class="why" style="font-weight:500">· Week ${S.week+1}</span></h2>`;
  h+=acts.map(a=>{const on=S.done[dkey(a.idx)];return `<div class="card row"><div class="check ${on?"on":""}" data-a="act" data-v="${a.idx}">${on?"✓":""}</div><div><div style="font-size:17px;font-weight:700;color:var(--navy)">${a.t}</div><div class="why">Why: ${a.why}</div><span class="skill">${SK[a.skill][0]} ${SK[a.skill][1]} +10</span></div></div>`;}).join("");
  if(allDone){const R=S.reflect||{};h+=`<div class="card navy"><b style="font-size:18px">🎉 Week complete! Quick check-in</b><div style="margin-top:8px">How did it feel?</div>
@@ -545,7 +624,7 @@ ${x.ask?`<div class="fb good" style="color:var(--ink)">💬 <b>Ask me:</b> “${
 function vPlan(){markSeen("plan");const tk=curTrack(),A=APPLY[tk];const g=S.planGrade||S.grade;
  const all=tasks();const dn=all.filter(t=>S.tdone[t.id]).length,pct=Math.round(dn/all.length*100);const sn=soonest();
  const U=upcoming(),now=new Date(),sEnd=schoolYearEnd();
- const todo=U.items.filter(x=>x.kind==="deadline"||!S.tdone[x.id]);const doneN=U.items.filter(x=>x.kind==="task"&&S.tdone[x.id]).length;
+ const todo=U.items.filter(x=>x.kind==="deadline"||!S.tdone[x.id]);const doneN=U.items.filter(x=>x.kind!=="deadline"&&S.tdone[x.id]).length;
  const b1=todo.filter(x=>(x.date-now)/864e5<=30),b2=todo.filter(x=>(x.date-now)/864e5>30&&x.date<=sEnd),b3=todo.filter(x=>x.date>sEnd);
  const sec=(title,list,max)=>list.length?`<div class="why" style="font-weight:800;color:var(--teal);margin:14px 0 0;text-transform:uppercase;letter-spacing:.5px">${title}</div>${(max&&!S.planAll[title]?list.slice(0,max):list).map(uRow).join("")}${max&&list.length>max?`<button class="btn ghost" data-a="planall" data-v="${title}">${S.planAll[title]?"Show fewer":"Show all "+list.length}</button>`:""}`:"";
  const pv=S.pview||"soon";
@@ -565,7 +644,7 @@ ${ord.length>6?`<button class="btn ghost" data-a="planall" data-v="${g}">${showA
  return header()+`<main>
 <div class="why" style="margin:0 0 6px;font-weight:700;color:var(--teal)">STEP 4 · YOUR NEXT STEPS AND DEADLINES</div>
 <div class="card navy" style="margin-top:0"><div style="display:flex;justify-content:space-between;align-items:baseline"><b style="font-size:18px">Due next</b><span style="color:var(--gold);font-weight:800;font-size:20px">${sn.days.toLocaleString()} days</span></div>
-<div style="font-size:15px;margin-top:4px">${sn.label} · ${sn.date}</div>
+<div style="font-size:15px;margin-top:4px">${esc(sn.label)} · ${sn.date}</div>
 <div class="pb" style="background:rgba(255,255,255,.2)"><i style="width:${Math.max(pct,2)}%"></i></div>
 <div style="font-size:12px;color:#C8D0E0">Whole plan: ${pct}% done. Typical dates, so confirm with your school or program.</div></div>
 <div class="chips" style="margin:10px 0 0"><button class="chip ${pv==="soon"?"on":""}" data-a="pview" data-v="soon">📅 Coming up</button><button class="chip ${pv==="grade"?"on":""}" data-a="pview" data-v="grade">🎓 By grade</button><button class="chip" data-a="cycletrack" style="font-size:13px;padding:7px 12px">Plan for: <b>${TRACKS[tk]}</b> ⟳</button></div>
@@ -579,6 +658,43 @@ ${toolsOpen?`<div class="why" style="margin:4px 0 0">Shortlist ${progN} · Porta
 <button class="btn alt" data-a="sortacts">Sort my activities</button>
 ${S.actsOut?`<div style="margin-top:8px">${S.actsOut.length?S.actsOut.slice(0,10).map((a,i)=>`<div class="row" style="padding:6px 0;border-top:1px solid var(--soft)"><b style="color:var(--gold);min-width:22px">${i+1}</b><div><div style="font-size:15px">${esc(a.t)}</div><span class="stp">${a.c}</span></div></div>`).join(""):"<div class='why'>Add at least one activity.</div>"}<div class="why" style="margin-top:8px">Jobs and family responsibilities count.</div></div>`:""}</div>`:""}</div>
 <p class="demo">Typical timelines, not official. Always confirm dates and requirements with each school, program, or employer.</p></main>`;}
+
+
+/* ---------- SCHOOL: check-in, class dates, bring in dates, flashcards ---------- */
+function chkBlock(){const C=S.chk;
+ if(!C)return `<div class="card"><b style="color:var(--navy);font-size:18px">🧪 Quick check-in</b><div class="why">7 questions in math, English, and science. See where you are caught up and where a quick review would help. Not graded, and only you see it.</div>
+<button class="btn" data-a="chkstart" data-v="catch">Am I caught up? (last year's skills)</button>${S.grade<12?`<button class="btn alt" data-a="chkstart" data-v="next">Am I ready for next grade?</button>`:""}</div>`;
+ const set=CHK[C.set];
+ if(!C.res){const q=set.q[C.i],ord=C.ord[C.i],picked=C.pick!=null,right=picked&&ord[C.pick]===q.a;
+  return `<div class="card"><div class="why" style="margin:0;font-weight:700;color:var(--teal)">QUESTION ${C.i+1} OF ${set.q.length} · ${q.s.toUpperCase()}</div><div class="pb"><i style="width:${(C.i+(picked?1:0))/set.q.length*100}%"></i></div>
+<p style="font-size:17px;font-weight:600;color:var(--navy);margin:10px 0">${q.q}</p>
+${ord.map((oi,i)=>`<button class="opt ${picked?(oi===q.a?"good":(i===C.pick?"bad":"")):""}" ${picked?"disabled":""} data-a="chkpick" data-v="${i}">${q.o[oi]}</button>`).join("")}
+${picked?`<div class="fb ${right?"good":"ok"}">${right?"Correct! ":"Not quite. "}${q.w}</div><button class="btn" data-a="chknext">${C.i+1<set.q.length?"Next question →":"See my results"}</button>`:""}</div>`;}
+ const R=C.res;
+ return `<div class="card"><b style="color:var(--navy);font-size:18px">🧪 Check-in results</b><div class="why">${R.label}. A friendly check, not a grade.</div>
+${SUBJ.map(x=>{const [c,t]=R.by[x],ok=c/t>=0.67;return `<div class="row" style="justify-content:space-between;align-items:center;padding:8px 0;border-top:1px solid var(--soft)"><b>${x}</b><span><span class="stp">${c}/${t}</span> <span class="badge" style="margin:0 0 0 4px;${ok?"background:var(--teal);color:#fff":""}">${ok?"On track":"Worth a review"}</span></span></div>`;}).join("")}
+<div class="fb good" style="color:var(--ink)">${R.weak.length?"A few spots to tighten. That is normal, and practice fixes it. We added review steps to your plan and flashcards below. If a topic stays hard, ask your teacher or counselor for help.":"Nice work. You look ready for what is ahead."}</div>
+<button class="btn ghost" data-a="chkreset">Take it again</button></div>`;}
+function datesBlock(){const today=new Date(),t0=new Date(today.getFullYear(),today.getMonth(),today.getDate());
+ const list=S.events.filter(e=>evDate(e)>=t0).sort((a,b)=>a.date.localeCompare(b.date)||(a.time||"").localeCompare(b.time||""));const show=S.planAll.evAll?list:list.slice(0,6);
+ return `<h2>📅 My class dates</h2><div class="card">${list.length?show.map(e=>{const L=dueLabel(evDate(e));return `<div class="row" style="padding:8px 0;border-top:1px solid var(--soft);justify-content:space-between;align-items:flex-start;gap:8px"><div class="row" style="gap:10px;align-items:flex-start"><div style="font-size:22px;width:26px;text-align:center">${EV_ICON[e.type]||"📌"}</div><div><div style="font-size:15px;line-height:1.35">${esc(e.t)}</div><span class="stp" style="margin-top:3px">${e.type}${e.cls?" · "+esc(e.cls):""} · ${evDate(e).toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"})}${e.time?" · "+e.time:""} · ${L.txt}</span></div></div><button class="chip" style="padding:4px 10px" data-a="evdel" data-v="${e.id}">✕</button></div>`;}).join("")+(list.length>6?`<button class="btn ghost" data-a="planall" data-v="evAll">${S.planAll.evAll?"Show fewer":"Show all "+list.length}</button>`:""):`<div class="why" style="margin:0 0 6px">No dates yet. Add one below, or bring in your class calendar or syllabus.</div>`}
+<div style="margin-top:12px;font-weight:700;color:var(--navy)">Add a date</div>
+<input type="text" id="ev_t" placeholder="e.g. Algebra final exam" maxlength="60" style="margin-top:8px">
+<div style="display:flex;gap:8px"><input type="date" id="ev_d" style="flex:1;min-width:0"><input type="time" id="ev_time" style="flex:1;min-width:0"></div>
+<select id="ev_type">${EV_TYPES.map(t=>`<option>${t}</option>`).join("")}</select>
+<button class="btn alt" data-a="addevent">Add to my plan</button></div>`;}
+function importBlock(){const open=!!S.planAll.impOpen;
+ const how=[["Canvas","Look for Calendar → Calendar Feed or Export. Download the .ics file, then import it here."],["Blackboard","Open the calendar and export or subscribe, if your school turns that on. Then import the .ics file."],["Google Classroom","In Google Calendar: Settings → Import & export → Export. Import the .ics file here."],["Syllabus or class page","Copy the text, paste it below, and we will find the dates."]];
+ return `<div class="card" style="padding:12px 14px"><div class="row" style="justify-content:space-between;align-items:center;cursor:pointer" data-a="imptoggle"><div><b style="color:var(--navy)">🔗 Bring in dates from your school</b><div class="why" style="margin:0">Canvas · Blackboard · Google Classroom · syllabus</div></div><span class="why" style="margin:0">${open?"▾":"▸"}</span></div>
+${open?`<div style="margin-top:8px">${how.map(h=>`<div style="padding:6px 0;border-top:1px solid var(--soft)"><b>${h[0]}</b><div class="why" style="margin:2px 0 0">${h[1]}</div></div>`).join("")}
+<input type="text" id="cls" placeholder="Class name (optional), e.g. Algebra I" value="${esc(S.clsName)}" maxlength="30" style="margin-top:10px">
+<label class="btn alt" style="display:block;text-align:center;cursor:pointer">📎 Import a calendar file (.ics)<input type="file" id="icsfile" accept=".ics,.txt,text/calendar,text/plain" style="display:none"></label>
+<textarea id="syl" placeholder="Or paste your syllabus here&#10;Oct 14: Unit 2 quiz&#10;Nov 20: Field trip to the science center&#10;Dec 12, 9:00 AM: Final exam" style="margin-top:10px">${esc(S.sylText)}</textarea>
+<button class="btn alt" data-a="findDates">Find the dates</button>
+<div class="why" style="margin-top:8px">Stays on this phone. Check the list above and remove anything that looks wrong. Signing in directly to Canvas or Blackboard needs your school's approval, so for now use a calendar file or your syllabus.</div></div>`:""}</div>`;}
+function cardsBlock(){return `<h2>🃏 Flashcards</h2><div class="card">${S.cards.length?S.cards.map((c,i)=>`<details style="margin:6px 0"><summary>${c.q}</summary><p><b>${c.a}</b><br>${c.w}</p><div class="why" style="margin:0"><span class="stp">${c.s}</span> <span data-a="cardel" data-v="${i}" style="color:var(--teal);font-weight:700;cursor:pointer">Remove</span></div></details>`).join(""):`<div class="why" style="margin:0 0 6px">Questions you miss in the check-in become flashcards. Tap one to flip it.</div>`}
+<a class="btn ghost" href="https://quizlet.com" target="_blank" rel="noopener" style="text-decoration:none">Open Quizlet for more flashcards ↗</a></div>`;}
+function vSchool(){return header()+`<main><h1>School</h1><p class="sub">Your classes, your dates, and a quick check on where you stand.</p>${chkBlock()}${datesBlock()}${importBlock()}${cardsBlock()}<p class="demo">Dates you add here appear in Plan → Coming up.</p></main>`;}
 
 /* ---------- ME ---------- */
 function vMe(){const p=P();const sk=Object.keys(SK);const nx=tasks().filter(t=>!S.tdone[t.id]).sort((a,b)=>(a.stage<S.grade?1:0)-(b.stage<S.grade?1:0)||a.stage-b.stage||seasonRank(a)-seasonRank(b))[0];const next=nx?nx.t:"You finished the plan!";
@@ -601,7 +717,7 @@ function render(){
  let h;
  if(S.screen==="welcome")h=vWelcome();
  else if(!S.path)h=vSpark();
- else{h={today:vToday,explore:vExplore,plan:vPlan,me:vMe}[S.tab]();h+=tabbar();}
+ else{h={today:vToday,explore:vExplore,plan:vPlan,school:vSchool,me:vMe}[S.tab]();h+=tabbar();}
  document.getElementById("app").innerHTML=h;
 }
 function draw(top){render();if(top)scrollTo(0,0);}
@@ -613,6 +729,7 @@ document.addEventListener("click",e=>{
  const nm=document.getElementById("nm");if(nm)S.name=nm.value.trim();
  const sc=document.getElementById("sc");if(sc)S.school=sc.value.trim();
  const ac=document.getElementById("acts");if(ac)S.actsText=ac.value;
+ const sy=document.getElementById("syl");if(sy)S.sylText=sy.value;const cl=document.getElementById("cls");if(cl)S.clsName=cl.value;
  const keep=scrollY;
  const stay=()=>{save();render();scrollTo(0,keep);};
  switch(a){
@@ -633,9 +750,19 @@ document.addEventListener("click",e=>{
   case "pg":S.planGrade=+v;stay();break;
   case "pview":S.pview=v;stay();break;
   case "ics":downloadICS();break;
+  case "gochk":S.tab="school";save();draw(true);break;
+  case "chkstart":{const set=chkSetFor(v);S.chk={set,mode:v,i:0,pick:null,ans:[],ord:CHK[set].q.map(()=>shuffle([0,1,2])),res:null};stay();break;}
+  case "chkpick":{const C=S.chk;if(C&&C.pick==null){C.pick=+v;C.ans[C.i]=C.ord[C.i][+v]===CHK[C.set].q[C.i].a;stay();}break;}
+  case "chknext":{const C=S.chk;if(C.i+1<CHK[C.set].q.length){C.i++;C.pick=null;}else finishChk();stay();break;}
+  case "chkreset":S.chk=null;stay();break;
+  case "addevent":{const t=document.getElementById("ev_t").value.trim(),d=document.getElementById("ev_d").value,tm=document.getElementById("ev_time").value,ty=document.getElementById("ev_type").value;if(!t||!d){toast("Add a name and a date");break;}addEvents([{t,date:d,time:fmtTime(tm),type:ty,cls:""}]);toast("Added to your plan");stay();break;}
+  case "evdel":S.events=S.events.filter(e=>e.id!==v);stay();break;
+  case "cardel":S.cards.splice(+v,1);stay();break;
+  case "imptoggle":S.planAll.impOpen=!S.planAll.impOpen;stay();break;
+  case "findDates":{const arr=S.sylText.trim()?parseDates(S.sylText,S.clsName):[];if(!arr.length){toast("No dates found. Try lines like: Oct 14: Quiz");break;}addEvents(arr);S.sylText="";toast("Added "+arr.length+" dates. Check the list.");stay();break;}
   case "planall":S.planAll[v]=!S.planAll[v];stay();break;
   case "tools":{const cur=S.toolsOpen===null?S.grade>=11:S.toolsOpen;S.toolsOpen=!cur;stay();break;}
-  case "ttoggle":{S.tdone[v]=!S.tdone[v];if(S.tdone[v]&&!S.xpGiven[v]){S.xpGiven[v]=true;const t=tasks().find(x=>x.id===v);if(t){const sk=TYPE_SKILL[t.type]||"prepare";award(sk,10);toast(SK[sk][1]+" +10 ⭐");}else if(v[0]==="k"){award("show_up",10);toast(SK.show_up[1]+" +10 ⭐");}burst(el,["✨","⭐"]);}stay();break;}
+  case "ttoggle":{S.tdone[v]=!S.tdone[v];if(S.tdone[v]&&!S.xpGiven[v]){S.xpGiven[v]=true;const t=tasks().find(x=>x.id===v);if(t){const sk=TYPE_SKILL[t.type]||"prepare";award(sk,10);toast(SK[sk][1]+" +10 ⭐");}else if("ker".includes(v[0])&&v[1]===":"){const sk2={k:"show_up",e:"prepare",r:"think"}[v[0]];award(sk2,10);toast(SK[sk2][1]+" +10 ⭐");}burst(el,["✨","⭐"]);}stay();break;}
   case "portal":S.portals[v]=!S.portals[v];stay();break;
   case "addprog":{const n=prompt("Add a school, program, or employer");if(n&&n.trim()){S.progs[v].push(n.trim().slice(0,40));stay();}break;}
   case "rmprog":{const [b,i]=v.split(":");if(confirm("Remove "+S.progs[b][+i]+"?")){S.progs[b].splice(+i,1);stay();}break;}
@@ -655,6 +782,7 @@ document.addEventListener("click",e=>{
   case "reset":if(confirm("Erase all demo data on this device?")){localStorage.removeItem("slm");S=fresh();draw(true);}break;
  }
 });
+document.addEventListener("change",e=>{const f=e.target;if(f.id!=="icsfile"||!f.files[0])return;const cl=document.getElementById("cls");if(cl)S.clsName=cl.value;const r=new FileReader();r.onload=()=>{const tx=String(r.result);const arr=/BEGIN:VCALENDAR/i.test(tx)?parseICS(tx,S.clsName):parseDates(tx,S.clsName);if(!arr.length){toast("No upcoming dates found in that file");return;}addEvents(arr);toast("Added "+arr.length+" dates. Check the list.");render();};r.readAsText(f.files[0]);});
 function choose(id){S.path=id;S.route=0;S.track=null;S.tab="explore";S.xseg="route";S.sparkMsg="";S.reflect=null;save();draw(true);burst(null,[PATHS[id].emoji,"✨"]);}
 draw();
 </script>
