@@ -698,10 +698,7 @@ function vSchool(){return header()+`<main><h1>School</h1><p class="sub">Your cla
 
 /* ---------- ME ---------- */
 function vMe(){const p=P();const sk=Object.keys(SK);const nx=tasks().filter(t=>!S.tdone[t.id]).sort((a,b)=>(a.stage<S.grade?1:0)-(b.stage<S.grade?1:0)||a.stage-b.stage||seasonRank(a)-seasonRank(b))[0];const next=nx?nx.t:"You finished the plan!";
-const dots=x=>`<div class="dots">${[0,1,2,3,4].map(i=>`<i class="${S.xp[x]>=(i+1)*20?"on":""}"></i>`).join("")}</div>`;
-return header()+`<main><h1>My Skill Tree</h1><p class="sub">Every real step lights up a skill. Skills follow you if your goal changes.</p>
-${sk.map(k=>`<div class="card"><b style="color:var(--navy)">${SK[k][0]} ${SK[k][1]}</b> <span class="why">${S.xp[k]} pts</span>${dots(k)}</div>`).join("")}
-<h2>My Path card</h2>
+return header()+`<main><h1>Me</h1><p class="sub">Your path card, a letter to your future self, and room to change your mind.</p>
 <div class="share"><div style="color:var(--gold);font-weight:800;font-size:12px;letter-spacing:1px">STUDENT LIKE ME</div><h3>${esc(S.name||"Me")} → ${p.emoji} ${p.title}</h3>
 <div class="m">ROUTE</div><div>${p.routes[S.route].name}</div><div class="m">NEXT STEP</div><div>${next}</div><div class="m">SKILLS</div>
 <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">${sk.map(k=>`<div>${SK[k][0]}<div class="dots" style="margin-top:2px">${[0,1,2].map(i=>`<i style="width:10px;height:10px" class="${S.xp[k]>=(i+1)*20?"on":""}"></i>`).join("")}</div></div>`).join("")}</div></div>
