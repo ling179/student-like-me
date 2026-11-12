@@ -354,7 +354,7 @@ const INTERESTS=[["🍰 Making & food","baker"],["🩺 Helping people heal","nur
 const BLOCK={time:"Pick the smallest action and do just that one.",motivation:"Look at your Path Map and remember your why. Even one step counts.",transport:"Choose actions you can do at school or at home.",how:"Ask your counselor or a teacher to walk you through it.",other:"Tell a counselor or a trusted adult. You don't have to solve it alone."};
 
 /* ============ STATE ============ */
-function fresh(){return {xseg:"route",seen:{},tdone:{},xpGiven:{},planAll:{},toolsOpen:null,track:null,portals:{},progs:{dream:[],fit:[],backup:[]},actsText:"",actsOut:null,school:"",pfilter:"all",saved:{},screen:"welcome",tab:"today",name:"",grade:9,interests:[],path:null,route:0,xp:{show_up:0,think:0,communicate:0,experience:0,prepare:0},done:{},qDone:{},week:0,reflect:null,letter:"",planGrade:9,sparkMsg:""};}
+function fresh(){return {xseg:"route",seen:{},tdone:{},xpGiven:{},planAll:{},toolsOpen:null,track:null,portals:{},progs:{dream:[],fit:[],backup:[]},actsText:"",actsOut:null,school:"",pfilter:"all",saved:{},screen:"welcome",tab:"today",name:"",grade:9,interests:[],path:null,route:0,xp:{show_up:0,think:0,communicate:0,experience:0,prepare:0},done:{},qDone:{},week:0,reflect:null,letter:"",planGrade:9,sparkMsg:"",pview:"soon"};}
 let S;try{S=Object.assign(fresh(),JSON.parse(localStorage.getItem("slm")||"{}"));}catch(e){S=fresh();}
 if(S.tab==="path")S.tab="explore";else if(["week","quest"].includes(S.tab))S.tab="today";else if(!["today","explore","plan","me"].includes(S.tab))S.tab="today";
 if(S.planGrade<9||S.planGrade>13)S.planGrade=S.grade;
@@ -388,6 +388,36 @@ function nextDeadline(A){const now=new Date();const base=now.getMonth()>=6?now.g
  return {days:Math.ceil((best.dt-now)/86400000),label:best.label,date:best.dt.toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"}),gy};}
 function tRow(t){const on=S.tdone[t.id];return `<div class="row" style="padding:8px 0;border-top:1px solid var(--soft)"><div class="check ${on?"on":""}" style="width:26px;height:26px;border-width:2px" data-a="ttoggle" data-v="${t.id}">${on?"✓":""}</div><div><div style="font-size:15px;line-height:1.35;${on?"color:var(--muted);text-decoration:line-through":""}">${t.t}</div><span class="stp" style="margin-top:3px">${t.type}</span></div></div>`;}
 
+
+/* ===== Near-term calendar: what's due soon, dated for THIS student (typical dates, confirm locally) ===== */
+const CHECKPOINTS=[["Fall check-in with your counselor: are you on track for credits?",10,31,0],["Mid-year check: review your grades and credits",1,31,0],["Pick next year's classes (dates vary by school)",2,28,1],["Plan your summer: a program, job, or volunteer spot",4,30,0],["Review your final report card: any class at risk?",6,1,0]];
+function gradYear(){const n=new Date();return (n.getMonth()>=6?n.getFullYear()+1:n.getFullYear())+(12-S.grade);}
+function schoolYearEnd(){const n=new Date();return new Date(n.getMonth()>=6?n.getFullYear()+1:n.getFullYear(),5,30);}
+function dueLabel(d){const days=Math.ceil((d-new Date())/86400000);const ds=d.toLocaleDateString(undefined,{month:"short",day:"numeric"});return {ds,days,txt:days<=0?"today":days===1?"tomorrow":days<45?days+" days":"about "+Math.round(days/30)+" months"};}
+function upcoming(){
+ const now=new Date(),A=APPLY[curTrack()],gy=gradYear(),sEnd=schoolYearEnd(),g=S.grade;const out=[],far=[];const all=tasks();
+ [g,g+1].filter(x=>x<=12).forEach((st,si)=>{
+  const list=all.filter(t=>t.stage===st);
+  if(st===12){const SD={"Summer":new Date(gy-1,7,15),"Fall":new Date(gy-1,9,15),"Winter–Spring":new Date(gy,1,15)};
+   const late=[];list.forEach((t,i)=>{const d=SD[t.season]||new Date(gy,4,1);if(d<now)late.push({t,i});else out.push({id:t.id,t:t.t,type:t.type,date:d,kind:"task"});});
+   late.sort((x,y)=>seasonRank(x.t)-seasonRank(y.t)||x.i-y.i);const step=Math.max(2,Math.floor(25/Math.max(late.length,1)));
+   late.forEach((x,i)=>out.push({id:x.t.id,t:x.t.t,type:x.t.type,date:new Date(now.getTime()+(3+i*step)*864e5),kind:"task"}));return;}
+  const a=si===0?now.getTime()+7*864e5:new Date(sEnd.getFullYear(),8,15).getTime();
+  const b=si===0?Math.max(sEnd.getTime()-14*864e5,a+864e5):new Date(sEnd.getFullYear()+1,4,15).getTime();
+  list.forEach((t,i)=>out.push({id:t.id,t:t.t,type:t.type,date:new Date(a+(b-a)*Math.pow((i+1)/(list.length+1),si===0?1.4:1)),kind:"task"}));});
+ CHECKPOINTS.forEach((c,i)=>{if(g>=12&&c[3])return;const y=now.getFullYear();let d=new Date(y,c[1]-1,c[2]);if(d<now)d=new Date(y+1,c[1]-1,c[2]);out.push({id:"k:"+i+":"+d.getFullYear(),t:c[0],type:"Check",date:d,kind:"task"});});
+ A.deadlines.forEach(dd=>{const d=new Date(gy+dd[3],dd[1]-1,dd[2]);if(d<now)return;if((d-now)/864e5<=548)out.push({id:"d:"+dd[0]+d.getFullYear(),t:dd[0],type:"Deadline",date:d,kind:"deadline"});else far.push({t:dd[0],date:d});});
+ out.sort((x,y)=>x.date-y.date);far.sort((x,y)=>x.date-y.date);return {items:out,far};}
+function soonest(){const it=upcoming().items.find(x=>x.kind==="deadline"||!S.tdone[x.id]);if(it){const L=dueLabel(it.date);return {label:it.t,date:L.ds,days:Math.max(L.days,0)};}const d=nextDeadline(APPLY[curTrack()]);return {label:d.label,date:d.date,days:d.days};}
+function uRow(it){const L=dueLabel(it.date);
+ if(it.kind==="deadline")return `<div class="row" style="padding:8px 0;border-top:1px solid var(--soft)"><div style="font-size:22px;width:26px;text-align:center">📅</div><div><div style="font-size:15px;line-height:1.35;font-weight:700;color:var(--navy)">${it.t}</div><span class="stp" style="margin-top:3px;background:var(--gold);color:var(--navy)">Deadline · ${L.ds} · ${L.txt}</span></div></div>`;
+ const on=S.tdone[it.id];return `<div class="row" style="padding:8px 0;border-top:1px solid var(--soft)"><div class="check ${on?"on":""}" style="width:26px;height:26px;border-width:2px" data-a="ttoggle" data-v="${it.id}">${on?"✓":""}</div><div><div style="font-size:15px;line-height:1.35;${on?"color:var(--muted);text-decoration:line-through":""}">${it.t}</div><span class="stp" style="margin-top:3px">By ${L.ds} · ${L.txt}</span></div></div>`;}
+function downloadICS(){const items=upcoming().items.filter(x=>x.kind==="deadline"||!S.tdone[x.id]).filter(x=>(x.date-new Date())/864e5<=400);
+ const pad=n=>String(n).padStart(2,"0"),fmt=d=>d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate());
+ const L=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Student Like Me//EN"];
+ items.forEach((it,i)=>{const e=new Date(it.date.getTime()+86400000);L.push("BEGIN:VEVENT","UID:slm-"+i+"-"+fmt(it.date)+"@studentlikeme","DTSTAMP:"+fmt(new Date())+"T000000Z","DTSTART;VALUE=DATE:"+fmt(it.date),"DTEND;VALUE=DATE:"+fmt(e),"SUMMARY:"+(it.kind==="deadline"?"DEADLINE: ":"")+it.t.replace(/[,;\n]/g," ")+" (typical, confirm)","END:VEVENT");});
+ L.push("END:VCALENDAR");const b=new Blob([L.join("\r\n")],{type:"text/calendar"});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="student-like-me.ics";document.body.appendChild(a);a.click();a.remove();toast("📅 "+items.length+" dates ready for your calendar");}
+
 /* ============ FUN ============ */
 function burst(el,em){const r=el?el.getBoundingClientRect():{left:innerWidth/2,top:innerHeight/2,width:0,height:0};const set=em||["🎉","✨","⭐","🥳"];for(let i=0;i<12;i++){const s=document.createElement("div");s.className="pop";s.textContent=set[i%set.length];s.style.left=(r.left+r.width/2)+"px";s.style.top=(r.top+r.height/2)+"px";s.style.setProperty("--dx",(Math.random()*240-120)+"px");s.style.setProperty("--dy",(-Math.random()*200-30)+"px");s.style.setProperty("--r",(Math.random()*360-180)+"deg");document.body.appendChild(s);setTimeout(()=>s.remove(),1000);}}
 function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2400);}
@@ -419,14 +449,15 @@ function vSpark(){const sug=S.interests;return header()+`<main>
 <input type="text" id="goal" placeholder="e.g. I like helping people fix their computers" autocomplete="off">
 <button class="btn" data-a="goalgo">Find my paths</button>
 ${S.sparkMsg?`<div class="fb ok">${esc(S.sparkMsg)}</div>`:""}
-<h2>Jobs near you right now</h2>
+<h2>Or start from an idea</h2>
+${Object.values(PATHS).map(p=>`<div class="card pcard ${sug.includes(p.id)?"sel":""}" data-a="pick" data-v="${p.id}"><div class="em">${p.emoji}</div><div><b>${p.title}${sug.includes(p.id)?'<span class="badge">For you</span>':""}</b><small>${p.pitch}</small></div></div>`).join("")}
+<button class="btn alt" data-a="surprise">🎲 Surprise me</button>
+<details style="margin-top:14px"><summary>📊 Curious about jobs near you? (Baltimore County data)</summary>
 <p class="sub">Real jobs in Baltimore County. Tap one to see the ladder up.</p>
 ${JOBS.map((j,i)=>`<div class="card" data-a="job" data-v="${i}" style="cursor:pointer"><div style="display:flex;justify-content:space-between;gap:8px"><b style="color:var(--navy)">${j.t}</b><span class="why" style="margin:0;white-space:nowrap">${j.n.toLocaleString()} jobs</span></div><div class="pb"><i style="width:${j.n/10732*100}%"></i></div><div class="why" style="margin:0">${j.hs}% of U.S. workers in this job have a high school diploma as their highest education${j.path?' · <b style="color:var(--teal)">Ladder ready →</b>':""}</div></div>`).join("")}
 <div class="src">Sources: Baltimore County 2025 Q2 Economic Indicators (Lightcast, 2024 jobs); U.S. Bureau of Labor Statistics (2023–24).</div>
-<h2>Or explore</h2>
-${Object.values(PATHS).map(p=>`<div class="card pcard ${sug.includes(p.id)?"sel":""}" data-a="pick" data-v="${p.id}"><div class="em">${p.emoji}</div><div><b>${p.title}${sug.includes(p.id)?'<span class="badge">For you</span>':""}</b><small>${p.pitch}</small></div></div>`).join("")}
-<button class="btn alt" data-a="surprise">🎲 Surprise me</button>
-<p class="demo">In the full app, AI reads what you type and maps it to verified pathways. This demo has 4 sample paths.</p>
+</details>
+<p class="demo">This demo has 4 sample paths.</p>
 </main>`;}
 
 /* ---------- Journey strip (the 5 steps) ---------- */
@@ -439,15 +470,15 @@ function journey(){const anyT=Object.values(S.tdone).some(Boolean),anyA=Object.v
 function vToday(){
  if(Q)return header()+`<main><button class="back" data-a="qback">‹ Back to Today</button>${Q.kind==="quiz"?renderQuiz():renderScn()}</main>`;
  const tk=curTrack(),A=APPLY[tk],all=tasks();const g=S.grade;const st=all.filter(t=>t.stage===g);const sd=st.filter(t=>S.tdone[t.id]).length;
- const dl=nextDeadline(A);const stage=STAGES.find(x=>x[0]===g);
- const nextTasks=all.filter(t=>t.stage>=g&&!S.tdone[t.id]).sort((a,b)=>a.stage-b.stage||seasonRank(a)-seasonRank(b)).slice(0,2);
+ const dl=soonest();const stage=STAGES.find(x=>x[0]===g);
+ const nextTasks=upcoming().items.filter(x=>x.kind==="task"&&!S.tdone[x.id]).slice(0,2);
  const acts=weekActions();const allDone=acts.every(a=>S.done[dkey(a.idx)]);
  const qk=!S.qDone[S.path+":quiz"]?"quiz":!S.qDone[S.path+":scn"]?"scn":"quiz";const q=P()[qk];
  let h=header()+`<main>${journey()}
 <div class="card navy"><div style="color:var(--gold);font-weight:800;font-size:12px;letter-spacing:1px">${stage[1].toUpperCase()} GRADE · ${stage[2].toUpperCase()}</div>
 <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:4px"><b style="font-size:18px">Your plan this year</b><span style="color:var(--gold);font-weight:800">${sd}/${st.length}</span></div>
 <div class="pb" style="background:rgba(255,255,255,.2)"><i style="width:${st.length?Math.max(sd/st.length*100,3):3}%"></i></div>
-<div style="font-size:13px;color:#C8D0E0">Next milestone: ${dl.label} · ${dl.date} · ${dl.days.toLocaleString()} days</div></div>
+<div style="font-size:13px;color:#C8D0E0">Due next: ${dl.label} · ${dl.date} · ${dl.days.toLocaleString()} days</div></div>
 <h2>This week <span class="why" style="font-weight:500">· Week ${S.week+1}</span></h2>`;
  h+=acts.map(a=>{const on=S.done[dkey(a.idx)];return `<div class="card row"><div class="check ${on?"on":""}" data-a="act" data-v="${a.idx}">${on?"✓":""}</div><div><div style="font-size:17px;font-weight:700;color:var(--navy)">${a.t}</div><div class="why">Why: ${a.why}</div><span class="skill">${SK[a.skill][0]} ${SK[a.skill][1]} +10</span></div></div>`;}).join("");
  if(allDone){const R=S.reflect||{};h+=`<div class="card navy"><b style="font-size:18px">🎉 Week complete! Quick check-in</b><div style="margin-top:8px">How did it feel?</div>
@@ -455,7 +486,7 @@ function vToday(){
 ${R.mood?`<div style="margin-top:6px">Anything get in the way?</div><div class="chips">${[["time","⏰ Time"],["motivation","😴 Motivation"],["transport","🚌 Getting around"],["how","🤷 Didn't know how"],["other","💭 Other"]].map(b=>`<button class="chip ${R.block===b[0]?"on":""}" style="${R.block===b[0]?"background:var(--gold);color:var(--navy);border-color:var(--gold)":""}" data-a="block" data-v="${b[0]}">${b[1]}</button>`).join("")}</div>`:""}
 ${R.mood&&R.block?`<div class="fb good" style="color:var(--ink)">${R.mood==="great"?"Love that. Keep the momentum.":R.mood==="ok"?"Solid week. Small steps add up.":"That's okay. Hard weeks happen."} ${BLOCK[R.block]}</div><button class="btn" data-a="nextweek">Start next week →</button>`:""}
 </div>`;}
- h+=`<h2>Next in your plan</h2><div class="card" style="padding-top:6px;padding-bottom:6px">${nextTasks.length?nextTasks.map(tRow).join(""):"<div style='padding:8px 0'>You finished the plan! 🎉</div>"}<button class="btn ghost" data-a="tab" data-v="plan">See full plan →</button></div>
+ h+=`<h2>Next in your plan</h2><div class="card" style="padding-top:6px;padding-bottom:6px">${nextTasks.length?nextTasks.map(uRow).join(""):"<div style='padding:8px 0'>You finished the plan! 🎉</div>"}<button class="btn ghost" data-a="tab" data-v="plan">See full plan →</button></div>
 <h2>Try it · 5 minutes</h2><div class="card pcard" data-a="startq" data-v="${qk}"><div class="em">${qk==="quiz"?"🧮":"🎬"}</div><div><b>${q.title}${S.qDone[S.path+":"+qk]?'<span class="badge">Done</span>':""}</b><small>${qk==="quiz"?"Taste the Future · math you'd use on the job":"A Day in the Life · make the call"}</small></div></div></main>`;
  return h;}
 function renderQuiz(){const q=P().quiz;return `<h1>${q.title}</h1><p class="sub" style="font-size:17px;color:var(--ink)">${q.q}</p>${q.opts.map((o,i)=>`<button class="opt ${Q.pick!=null?(i===q.ans?"good":(i===Q.pick?"bad":"")):""}" ${Q.pick!=null?"disabled":""} data-a="qpick" data-v="${i}">${o}</button>`).join("")}${Q.pick!=null?`<div class="fb ${Q.pick===q.ans?"good":"ok"}">${Q.pick===q.ans?"Correct! ":"Not quite. "}${q.why}</div><button class="btn" data-a="qback">Done</button>`:""}`;}
@@ -467,15 +498,21 @@ function vExplore(){const seg=S.xseg||"route";markSeen(seg);
  const body=seg==="route"?routeBody():seg==="compare"?compareBody():peopleBody();
  return header()+`<main><div class="chips" style="margin-top:0">${segs.map(x=>`<button class="chip ${seg===x[0]?"on":""}" data-a="xseg" data-v="${x[0]}">${x[1]}</button>`).join("")}</div>${body}</main>`;}
 
-function routeBody(){const p=P();const r=p.routes[S.route];return `
+function ladderHtml(p){return `<div class="card navy" style="margin-top:8px"><b>${p.ladderTitle||"📈 The local ladder · Baltimore County"}</b>${p.ladder.map((l,i)=>`${i?'<div style="color:var(--gold);font-weight:800;margin-top:4px">⬆</div>':""}<div style="display:flex;justify-content:space-between;gap:8px;margin-top:8px"><b>${l.t}</b><span style="white-space:nowrap;color:var(--gold)">${l.pay?"$"+l.pay.toLocaleString()+" median":l.n.toLocaleString()+" jobs · "+l.g}</span></div><div style="font-size:12px;color:#C8D0E0">${l.edu||l.hs+"% of U.S. workers here have a high school diploma as their highest education"}</div>`).join("")}${p.ladderNote?`<div style="font-size:11px;color:#C8D0E0;margin-top:10px;line-height:1.4">${p.ladderNote}</div>`:""}</div>`;}
+function routeBody(){const p=P();const r=p.routes[S.route];const near=r.nodes.slice(0,2),later=r.nodes.slice(2);
+ const nodes=a=>a.map(n=>`<div class="node"><div class="dot">${n.e}</div><details><summary>${n.t}</summary><p>${n.d}</p><div class="src">${n.src}</div></details></div>`).join("");
+ return `
 <div class="why" style="margin:6px 0 2px;font-weight:700;color:var(--teal)">STEP 2 · EXPLORE REAL-WORLD PATHWAYS</div>
-${p.ladder?`<div class="card navy"><b>${p.ladderTitle||"📈 The local ladder · Baltimore County"}</b>${p.ladder.map((l,i)=>`${i?'<div style="color:var(--gold);font-weight:800;margin-top:4px">⬆</div>':""}<div style="display:flex;justify-content:space-between;gap:8px;margin-top:8px"><b>${l.t}</b><span style="white-space:nowrap;color:var(--gold)">${l.pay?"$"+l.pay.toLocaleString()+" median":l.n.toLocaleString()+" jobs · "+l.g}</span></div><div style="font-size:12px;color:#C8D0E0">${l.edu||l.hs+"% of U.S. workers here have a high school diploma as their highest education"}</div>`).join("")}${p.ladderNote?`<div style="font-size:11px;color:#C8D0E0;margin-top:10px;line-height:1.4">${p.ladderNote}</div>`:""}</div>`:""}
 <div class="chips">${p.routes.map((x,i)=>`<button class="chip ${i===S.route?"on":""}" data-a="route" data-v="${i}">${x.name}</button>`).join("")}</div>
 <div class="card soft"><b>${r.name}</b> <span class="badge">${r.tag}</span><div class="why">${r.fit}</div></div>
-<div class="rail">${r.nodes.map(n=>`<div class="node"><div class="dot">${n.e}</div><details><summary>${n.t}</summary><p>${n.d}</p><div class="src">${n.src}</div></details></div>`).join("")}</div>
-<details style="margin-top:14px"><summary>🔁 What this route asks of you today</summary>${p.req.map(x=>`<p style="margin:8px 0 0"><b style="color:var(--navy)">${x[0]}</b><br><span style="color:var(--muted)">→ ${x[1]}</span></p>`).join("")}</details>
-<button class="btn" data-a="xseg" data-v="compare">Compare routes →</button>
-<p class="demo">Sample data. In the full app, every stop shows a verified source and date.</p>`;}
+<div class="card"><b style="color:var(--navy)">✅ What this route asks of you now</b>${p.req.map(x=>`<p style="margin:8px 0 0"><b style="color:var(--navy)">${x[0]}</b><br><span style="color:var(--muted)">→ ${x[1]}</span></p>`).join("")}</div>
+<div class="why" style="margin:14px 0 4px;font-weight:800;color:var(--teal);letter-spacing:.5px">NEXT: THROUGH GRADUATION AND YOUR FIRST STEP</div>
+<div class="rail">${nodes(near)}</div>
+${later.length?`<details style="margin-top:12px"><summary>Later: ${later.length} more steps</summary><div class="rail" style="margin-top:8px">${nodes(later)}</div></details>`:""}
+${p.ladder?`<details style="margin-top:12px"><summary>📈 Where this can lead later (jobs and pay)</summary>${ladderHtml(p)}</details>`:""}
+<button class="btn" data-a="tab" data-v="plan">See my next steps and deadlines →</button>
+<button class="btn alt" data-a="xseg" data-v="compare">Compare routes</button>
+<p class="demo">Sample data. Tap a step to see its source.</p>`;}
 
 function compareBody(){const p=P();return `
 <div class="why" style="margin:6px 0 2px;font-weight:700;color:var(--teal)">STEP 3 · COMPARE OPPORTUNITIES</div>
@@ -502,35 +539,45 @@ ${x.quote?`<div class="fb good" style="color:var(--ink)">“${x.quote}”</div>`
 ${x.tip?`<div class="why">💡 <b>Tip:</b> ${x.tip}</div>`:""}
 ${x.ask?`<div class="fb good" style="color:var(--ink)">💬 <b>Ask me:</b> “${x.ask}”</div>`:""}
 <div style="display:flex;gap:8px"><button class="btn alt" style="margin-top:10px" data-a="ask" data-v="${x.id}">💬 Ask ${x.name.split(" ")[0]}</button><button class="btn alt" style="margin-top:10px;width:auto;padding:14px 18px" data-a="save" data-v="${x.id}">${S.saved[x.id]?"💛":"🤍"}</button></div></div>`).join(""):`<div class="card soft">No matches yet for this filter. Try Everyone.</div>`}
-<p class="demo">Stories marked Sample are fictional examples. In the full app: alumni who opt in, plus published profiles and interviews. Intros go through a counselor.</p>`;}
+<p class="demo">Stories marked Sample are fictional examples. Alumni opt in to share, and intros go through a counselor.</p>`;}
 
-/* ---------- STEP 4 · PLAN (one roadmap: school + applications) ---------- */
+/* ---------- STEP 4 · PLAN (near-term first: what is due, in order) ---------- */
 function vPlan(){markSeen("plan");const tk=curTrack(),A=APPLY[tk];const g=S.planGrade||S.grade;
- const all=tasks();const dn=all.filter(t=>S.tdone[t.id]).length,pct=Math.round(dn/all.length*100);const dl=nextDeadline(A);
+ const all=tasks();const dn=all.filter(t=>S.tdone[t.id]).length,pct=Math.round(dn/all.length*100);const sn=soonest();
+ const U=upcoming(),now=new Date(),sEnd=schoolYearEnd();
+ const todo=U.items.filter(x=>x.kind==="deadline"||!S.tdone[x.id]);const doneN=U.items.filter(x=>x.kind==="task"&&S.tdone[x.id]).length;
+ const b1=todo.filter(x=>(x.date-now)/864e5<=30),b2=todo.filter(x=>(x.date-now)/864e5>30&&x.date<=sEnd),b3=todo.filter(x=>x.date>sEnd);
+ const sec=(title,list,max)=>list.length?`<div class="why" style="font-weight:800;color:var(--teal);margin:14px 0 0;text-transform:uppercase;letter-spacing:.5px">${title}</div>${(max&&!S.planAll[title]?list.slice(0,max):list).map(uRow).join("")}${max&&list.length>max?`<button class="btn ghost" data-a="planall" data-v="${title}">${S.planAll[title]?"Show fewer":"Show all "+list.length}</button>`:""}`:"";
+ const pv=S.pview||"soon";
+ const soonView=`<div class="card" style="padding-top:2px;padding-bottom:12px">${todo.length?sec("Next 30 days",b1)+sec("Rest of this school year",b2,5)+sec("Next school year",b3,3):"<div style='padding:10px 0'>All caught up. 🎉</div>"}${doneN?`<div class="why" style="margin-top:10px">✓ ${doneN} done</div>`:""}
+<button class="btn alt" data-a="ics">📅 Add these dates to my calendar</button>
+${U.far.length?`<div class="why" style="margin-top:10px">First big application deadline: <b>${U.far[0].t}</b>, ${U.far[0].date.toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"})}. Nothing is due yet. Do the steps above first.</div>`:""}</div>`;
  const st=all.filter(t=>t.stage===g);const sd=st.filter(t=>S.tdone[t.id]).length;
  const ord=st.map((t,i)=>({t,i})).sort((a,b)=>(!!S.tdone[a.t.id]-!!S.tdone[b.t.id])||seasonRank(a.t)-seasonRank(b.t)||a.i-b.i).map(x=>x.t);
  const showAll=!!S.planAll[g];const shown=showAll?ord:ord.slice(0,6);
  let lastSeason=null;const rows=shown.map(t=>{let hd="";if(t.season&&t.season!==lastSeason){hd=`<div class="why" style="font-weight:800;color:var(--teal);margin:12px 0 0;text-transform:uppercase;letter-spacing:.5px">${t.season}</div>`;}lastSeason=t.season;return hd+tRow(t);}).join("");
- const toolsOpen=S.toolsOpen===null?S.grade>=11:S.toolsOpen;const portalsDone=A.portals.filter((_,i)=>S.portals[tk+":"+i]).length;const progN=Object.values(S.progs).reduce((a,b)=>a+b.length,0);
- return header()+`<main>
-<div class="why" style="margin:0 0 6px;font-weight:700;color:var(--teal)">STEP 4 · BUILD AN ACTIONABLE PLAN</div>
-<div class="card navy" style="margin-top:0"><div style="display:flex;justify-content:space-between;align-items:baseline"><b style="font-size:18px">Road to my goal</b><span style="color:var(--gold);font-weight:800;font-size:20px">${pct}%</span></div>
-<div class="pb" style="background:rgba(255,255,255,.2)"><i style="width:${Math.max(pct,2)}%"></i></div>
-<div style="font-size:13px;color:#C8D0E0">Next: ${dl.label} · ${dl.date} (${dl.days.toLocaleString()} days). Typical timeline, so check each school or program.</div></div>
-<div class="chips" style="margin:10px 0 0"><button class="chip" data-a="cycletrack" style="font-size:13px;padding:7px 12px">Plan for: <b>${TRACKS[tk]}</b> ⟳</button></div>
-<div class="chips">${STAGES.map(x=>`<button class="chip ${x[0]===g?"on":""}" data-a="pg" data-v="${x[0]}">${x[1]}${x[0]===S.grade?" ★":""}</button>`).join("")}</div>
+ const gradeView=`<div class="chips">${STAGES.map(x=>`<button class="chip ${x[0]===g?"on":""}" data-a="pg" data-v="${x[0]}">${x[1]}${x[0]===S.grade?" ★":""}</button>`).join("")}</div>
 <div class="card" style="padding-top:12px"><div style="display:flex;justify-content:space-between;align-items:baseline"><b style="color:var(--navy);font-size:17px">${g===13?"After graduation":g+"th grade"} · ${STAGES.find(x=>x[0]===g)[2]}</b><span class="why" style="margin:0">${sd}/${st.length} done</span></div>
 <div class="pb"><i style="width:${st.length?sd/st.length*100:0}%"></i></div>
 ${rows}
-${ord.length>6?`<button class="btn ghost" data-a="planall" data-v="${g}">${showAll?"Show fewer":"Show all "+ord.length+" tasks"}</button>`:""}</div>
-<div class="card" style="padding:12px 14px"><div class="row" style="justify-content:space-between;align-items:center;cursor:pointer" data-a="tools"><b style="color:var(--navy)">🧰 Application toolkit</b><span class="why" style="margin:0;white-space:nowrap">${toolsOpen?"▾":"▸"}</span></div>
+${ord.length>6?`<button class="btn ghost" data-a="planall" data-v="${g}">${showAll?"Show fewer":"Show all "+ord.length+" tasks"}</button>`:""}</div>`;
+ const toolsOpen=S.toolsOpen===null?false:S.toolsOpen;const portalsDone=A.portals.filter((_,i)=>S.portals[tk+":"+i]).length;const progN=Object.values(S.progs).reduce((a,b)=>a+b.length,0);
+ return header()+`<main>
+<div class="why" style="margin:0 0 6px;font-weight:700;color:var(--teal)">STEP 4 · YOUR NEXT STEPS AND DEADLINES</div>
+<div class="card navy" style="margin-top:0"><div style="display:flex;justify-content:space-between;align-items:baseline"><b style="font-size:18px">Due next</b><span style="color:var(--gold);font-weight:800;font-size:20px">${sn.days.toLocaleString()} days</span></div>
+<div style="font-size:15px;margin-top:4px">${sn.label} · ${sn.date}</div>
+<div class="pb" style="background:rgba(255,255,255,.2)"><i style="width:${Math.max(pct,2)}%"></i></div>
+<div style="font-size:12px;color:#C8D0E0">Whole plan: ${pct}% done. Typical dates, so confirm with your school or program.</div></div>
+<div class="chips" style="margin:10px 0 0"><button class="chip ${pv==="soon"?"on":""}" data-a="pview" data-v="soon">📅 Coming up</button><button class="chip ${pv==="grade"?"on":""}" data-a="pview" data-v="grade">🎓 By grade</button><button class="chip" data-a="cycletrack" style="font-size:13px;padding:7px 12px">Plan for: <b>${TRACKS[tk]}</b> ⟳</button></div>
+${pv==="soon"?soonView:gradeView}
+<div class="card" style="padding:12px 14px"><div class="row" style="justify-content:space-between;align-items:center;cursor:pointer" data-a="tools"><div><b style="color:var(--navy)">🧰 Application toolkit</b><div class="why" style="margin:0">Shortlist · Portals · Activities</div></div><span class="why" style="margin:0;white-space:nowrap">${toolsOpen?"▾":"▸"}</span></div>
 ${toolsOpen?`<div class="why" style="margin:4px 0 0">Shortlist ${progN} · Portals ${portalsDone}/${A.portals.length}</div>
 <div style="margin-top:10px"><b style="color:var(--navy)">Shortlist</b>${[["dream","🌟 Dream"],["fit","🎯 Good fit"],["backup","🛟 Backup"]].map(b=>`<div style="padding:6px 0"><div class="row" style="justify-content:space-between;align-items:center"><span style="font-weight:600">${b[1]}</span><button class="chip" style="padding:6px 14px" data-a="addprog" data-v="${b[0]}">Add</button></div>${S.progs[b[0]].map((n,i)=>`<div class="stp" style="margin:4px 4px 0 0" data-a="rmprog" data-v="${b[0]}:${i}">${esc(n)} ✕</div>`).join("")}</div>`).join("")}</div>
 <div style="margin-top:12px"><b style="color:var(--navy)">Portals</b>${A.portals.map((n,i)=>{const k=tk+":"+i;const on=S.portals[k];return `<div class="row" style="justify-content:space-between;align-items:center;padding:6px 0"><span>${n}</span><button class="chip ${on?"on":""}" style="padding:6px 14px" data-a="portal" data-v="${k}">${on?"Added ✓":"Add"}</button></div>`;}).join("")}</div>
 <div style="margin-top:12px"><b style="color:var(--navy)">Activities</b><div class="why" style="margin:2px 0 8px">Paste what you do, one per line: clubs, jobs, caring for family, volunteering.</div>
 <textarea id="acts" placeholder="Babysit my little brother after school&#10;Cashier at corner store, 10 hrs/week&#10;Bake for church sale&#10;Basketball team">${esc(S.actsText)}</textarea>
 <button class="btn alt" data-a="sortacts">Sort my activities</button>
-${S.actsOut?`<div style="margin-top:8px">${S.actsOut.length?S.actsOut.slice(0,10).map((a,i)=>`<div class="row" style="padding:6px 0;border-top:1px solid var(--soft)"><b style="color:var(--gold);min-width:22px">${i+1}</b><div><div style="font-size:15px">${esc(a.t)}</div><span class="stp">${a.c}</span></div></div>`).join(""):"<div class='why'>Add at least one activity.</div>"}<div class="why" style="margin-top:8px">Jobs and family responsibilities count. Demo sorter uses simple keyword rules. The full app uses AI.</div></div>`:""}</div>`:""}</div>
+${S.actsOut?`<div style="margin-top:8px">${S.actsOut.length?S.actsOut.slice(0,10).map((a,i)=>`<div class="row" style="padding:6px 0;border-top:1px solid var(--soft)"><b style="color:var(--gold);min-width:22px">${i+1}</b><div><div style="font-size:15px">${esc(a.t)}</div><span class="stp">${a.c}</span></div></div>`).join(""):"<div class='why'>Add at least one activity.</div>"}<div class="why" style="margin-top:8px">Jobs and family responsibilities count.</div></div>`:""}</div>`:""}</div>
 <p class="demo">Typical timelines, not official. Always confirm dates and requirements with each school, program, or employer.</p></main>`;}
 
 /* ---------- ME ---------- */
@@ -572,7 +619,7 @@ document.addEventListener("click",e=>{
   case "grade":S.grade=+v;S.planGrade=+v;stay();break;
   case "interest":{const i=S.interests.indexOf(v);i>=0?S.interests.splice(i,1):S.interests.push(v);stay();break;}
   case "start":S.screen="app";if(!S.name)S.name="Friend";S.planGrade=S.grade;save();draw(true);break;
-  case "goalgo":{const t=document.getElementById("goal").value;const m=matchPath(t);if(m){choose(m);}else{S.sparkMsg=t.trim()?"I don't have a sample path for that yet. Try one below. The full app would build one from verified sources.":"Type something you're curious about, or tap a path below.";save();render();}break;}
+  case "goalgo":{const t=document.getElementById("goal").value;const m=matchPath(t);if(m){choose(m);}else{S.sparkMsg=t.trim()?"I don't have a sample path for that yet. Try one below.":"Type something you're curious about, or tap a path below.";save();render();}break;}
   case "pick":choose(v);break;
   case "job":{const j=JOBS[+v];if(j.path)choose(j.path);else toast("Ladder for this job is coming soon (demo)");break;}
   case "surprise":{const ids=Object.keys(PATHS);choose(ids[Math.floor(Math.random()*ids.length)]);toast("🎲 Surprise! Take a look.");break;}
@@ -584,9 +631,11 @@ document.addEventListener("click",e=>{
   case "track":S.track=v;stay();break;
   case "cycletrack":{const ks=Object.keys(TRACKS);S.track=ks[(ks.indexOf(curTrack())+1)%ks.length];stay();break;}
   case "pg":S.planGrade=+v;stay();break;
+  case "pview":S.pview=v;stay();break;
+  case "ics":downloadICS();break;
   case "planall":S.planAll[v]=!S.planAll[v];stay();break;
   case "tools":{const cur=S.toolsOpen===null?S.grade>=11:S.toolsOpen;S.toolsOpen=!cur;stay();break;}
-  case "ttoggle":{S.tdone[v]=!S.tdone[v];if(S.tdone[v]&&!S.xpGiven[v]){S.xpGiven[v]=true;const t=tasks().find(x=>x.id===v);if(t){const sk=TYPE_SKILL[t.type]||"prepare";award(sk,10);toast(SK[sk][1]+" +10 ⭐");}burst(el,["✨","⭐"]);}stay();break;}
+  case "ttoggle":{S.tdone[v]=!S.tdone[v];if(S.tdone[v]&&!S.xpGiven[v]){S.xpGiven[v]=true;const t=tasks().find(x=>x.id===v);if(t){const sk=TYPE_SKILL[t.type]||"prepare";award(sk,10);toast(SK[sk][1]+" +10 ⭐");}else if(v[0]==="k"){award("show_up",10);toast(SK.show_up[1]+" +10 ⭐");}burst(el,["✨","⭐"]);}stay();break;}
   case "portal":S.portals[v]=!S.portals[v];stay();break;
   case "addprog":{const n=prompt("Add a school, program, or employer");if(n&&n.trim()){S.progs[v].push(n.trim().slice(0,40));stay();}break;}
   case "rmprog":{const [b,i]=v.split(":");if(confirm("Remove "+S.progs[b][+i]+"?")){S.progs[b].splice(+i,1);stay();}break;}
