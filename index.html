@@ -111,140 +111,6 @@ const SK={show_up:["📅","Show Up"],think:["🧠","Think"],communicate:["💬",
 const DIPLOMA={e:"🎓",t:"High school diploma",d:"The first step on every route. Stay on track: attend, pass your core classes, and earn your credits.",src:"Source: Baltimore City Public Schools graduation requirements"};
 
 const PATHS={
-baker:{id:"baker",emoji:"🥐",title:"Baker / bakery owner",pitch:"Turn baking into a career",
-kw:["bak","cake","pastry","cookie","bread","cook","chef","dessert","cupcake","food","bakery"],
-routes:[
- {name:"Community college certificate",tag:"Most direct",time:"Often about 1–2 years after graduation (varies by program)",cost:"Lower",fit:"You want hands-on skills fast and a recognized credential.",hard:"Early hours and physical work. Starting pay is often modest.",
-  nodes:[DIPLOMA,
-   {e:"🏫",t:"Baking & pastry certificate",d:"Programs typically cover baking fundamentals, food science, sanitation, nutrition, and basic business. Check which nearby college offers one.",src:"Source: community college program page"},
-   {e:"🥐",t:"Bakery job",d:"Entry roles include bakery assistant and production baker. Many employers want a food handler card.",src:"Source: employer job posts; U.S. Bureau of Labor Statistics"},
-   {e:"🏪",t:"Own bakery (later)",d:"Usually after real work experience. Needs permits, a business registration, and a plan for money.",src:"Source: local health department; state business registration"}]},
- {name:"Work first, learn on the job",tag:"Earn while you learn",time:"You can start soon after graduation",cost:"You earn while you learn",fit:"You prefer learning by doing and want income quickly.",hard:"Advancing can be slower without credentials, and it depends on your employer.",
-  nodes:[DIPLOMA,
-   {e:"🥐",t:"Entry bakery job",d:"Start as an assistant or counter team member. Show up on time and ask questions.",src:"Source: employer job posts"},
-   {e:"📈",t:"Train under a baker",d:"Learn techniques on the job. Add short courses or certifications when you can.",src:"Source: employer training; community college short courses"},
-   {e:"👩‍🍳",t:"Lead baker or own shop",d:"Experience plus credentials opens lead roles and, later, ownership.",src:"Source: industry experience"}]},
- {name:"Four-year degree",tag:"Widest range of careers",time:"About 4 years",cost:"Higher",fit:"You like the science side: food science, product development, or management.",hard:"Takes longer and costs more. Scholarships and aid help.",
-  nodes:[DIPLOMA,
-   {e:"🏛️",t:"Four-year program",d:"Food science, hospitality management, or business degrees connect to baking and food companies.",src:"Source: college program pages"},
-   {e:"🔬",t:"Food industry or management role",d:"Roles like product developer, quality assurance, or bakery manager.",src:"Source: U.S. Bureau of Labor Statistics"},
-   {e:"🏪",t:"Own a business or lead a team",d:"A degree can help with scaling a business or moving into leadership.",src:"Source: industry pathways"}]}
-],
-credLabels:["To get hired","To run your own bakery"],
-creds:[[
- {t:"Food handler card",d:"Basic food safety training, for example ServSafe Food Handler or a local equivalent. Often quick, and some employers require it."},
- {t:"Food protection manager certification",d:"Usually for supervisors and managers, for example ServSafe Manager. Check what Maryland and your county require."}],[
- {t:"Food service license or permit",d:"Issued by the local health department. Rules differ for a storefront and baking at home."},
- {t:"Business registration and tax ID",d:"Register the business with the state and get a federal tax ID."},
- {t:"Zoning and inspections",d:"The space has to meet zoning, fire, and health inspection rules."},
- {t:"Home baking (cottage food)",d:"Some states allow limited home sales with special rules. Check Maryland's current rules before selling anything."}]],
-req:[["High school diploma","Stay on track: attendance and passing core classes."],["Food science","Take chemistry. Baking is chemistry you can eat."],["Scaling recipes","Math: ratios and fractions."],["Food safety","Learn handwashing, temperatures, and cross-contact."],["Business basics","Make a pretend bakery budget."]],
-plan:{
- 9:[["Course","Stay on track in math, English, and science"],["Try it","Start a baking club or a home baking log"],["Try it","Visit a local bakery and look around"],["Milestone","Finish 9th grade with all your credits"]],
- 10:[["Course","Take chemistry or biology"],["Course","Algebra or geometry (recipes are ratios)"],["Try it","Bake for a family event and price it"],["Milestone","Look up nearby baking programs"]],
- 11:[["Course","Business, culinary, or CTE class if offered"],["Credential","Get a food handler card"],["Try it","Part-time job or volunteering at a bakery"],["Milestone","Compare two certificate programs; ask about dual enrollment"]],
- 12:[["Milestone","Apply to a certificate program"],["Milestone","Fill out financial aid forms and apply for scholarships"],["Try it","Line up a job; do an informational interview with an alum"],["Milestone","Graduate on time"]]},
-actions:{a:[
- {t:"Go to every class this week",why:"Bakeries open on time. Showing up is the first ingredient.",skill:"show_up"},
- {t:"Turn in every math assignment",why:"Baking is ratios and scaling.",skill:"think"},
- {t:"Bake something and write down what you changed",why:"Recipe notes are lab notes.",skill:"experience"},
- {t:"Ask one adult what they like about their job",why:"Real people teach you what websites can't.",skill:"communicate"},
- {t:"Read the jobs page of one Baltimore bakery",why:"See what employers really ask for.",skill:"prepare"}],
- b:[
- {t:"Compare two certificate programs",why:"Cost, length, and courses differ.",skill:"prepare"},
- {t:"Ask a baker or alum two questions",why:"Hear what the work is really like.",skill:"communicate"},
- {t:"Work or volunteer one shift in food service",why:"Experience beats guessing.",skill:"experience"},
- {t:"Finish your food safety training",why:"It's often required to be hired.",skill:"prepare"},
- {t:"Keep your grades on track this week",why:"Aid and programs look at your record.",skill:"show_up"}]},
-quiz:{title:"Scale the cookie recipe",q:"A recipe makes 12 cookies using 2 cups of flour. You need 36 cookies for a school sale. How much flour?",opts:["4 cups","6 cups","8 cups"],ans:1,why:"36 ÷ 12 = 3 batches. 3 × 2 cups = 6 cups. Bakers do this every day.",skill:"think"},
-scn:{title:"The 5 a.m. oven problem",q:"You're a bakery apprentice at 5 a.m. The oven is running 20 minutes late and a catering order is due at 7. What do you do?",skill:"communicate",opts:[
- {t:"Tell the head baker right away and ask what to prioritize",good:true,fb:"Great call. Speaking up early gives your team time to fix it."},
- {t:"Stay quiet and hope it catches up",good:false,fb:"Problems grow in silence. Bakers tell the team early."},
- {t:"Skip steps to go faster",good:false,fb:"Skipping steps can ruin the batch or break food safety rules."}]}
-},
-police:{id:"police",emoji:"🚓",title:"Police officer",pitch:"Serve and protect your community",
-kw:["police","cop","officer","law","detective","public safety","safety","crime","sheriff"],
-routes:[
- {name:"Academy after graduation",tag:"Most direct",time:"Depends on the agency's minimum age and hiring process",cost:"Often paid training",fit:"You meet the agency's requirements and want to start soon.",hard:"Age minimums, a background check, and a fitness test.",
-  nodes:[DIPLOMA,{e:"📝",t:"Apply and screening",d:"Typical steps include an application, written test, fitness test, interviews, and a background check. Details vary by agency.",src:"Source: agency hiring page"},{e:"🏫",t:"Police academy",d:"Training run by the agency or state. Check your agency's page for what it involves.",src:"Source: agency / state training commission"},{e:"🚓",t:"Officer",d:"Start on patrol, with chances to specialize later.",src:"Source: agency career pages"}]},
- {name:"Community college + criminal justice",tag:"Builds options",time:"About 2 years, then apply",cost:"Lower",fit:"You want college credit and time to grow before applying.",hard:"More school before the job.",
-  nodes:[DIPLOMA,{e:"🏫",t:"Community college",d:"Associate degree options such as criminal justice. Credits may transfer.",src:"Source: community college program page"},{e:"📝",t:"Apply to an agency",d:"College can help with applications. Check each agency's preferences.",src:"Source: agency hiring page"},{e:"🚓",t:"Academy and officer",d:"Complete training and begin work.",src:"Source: agency / state training commission"}]},
- {name:"Four-year degree",tag:"Widest range",time:"About 4 years",cost:"Higher",fit:"You're interested in investigations, policy, or leadership.",hard:"Takes longer and costs more.",
-  nodes:[DIPLOMA,{e:"🏛️",t:"Four-year program",d:"Criminal justice, psychology, sociology, or other fields.",src:"Source: college program pages"},{e:"📝",t:"Apply to an agency",d:"Some roles prefer or require a degree.",src:"Source: agency hiring page"},{e:"🕵️",t:"Officer or specialist",d:"Degrees can help with investigative and leadership roles.",src:"Source: agency career pages"}]},
- {name:"Related public safety roles",tag:"Other ways to serve",time:"Varies by role",cost:"Varies",fit:"You want to serve but aren't sure about policing.",hard:"Different duties and schedules.",
-  nodes:[DIPLOMA,{e:"📞",t:"911 dispatcher",d:"Dispatchers take emergency calls and send help.",src:"Source: local 911 center"},{e:"⚖️",t:"Corrections or probation",d:"Roles in the justice system with different training.",src:"Source: state agency pages"},{e:"🚑",t:"Emergency management or EMS",d:"Help in emergencies and disasters.",src:"Source: local agency pages"}]}
-],
-credLabels:["To be eligible","To train and advance"],
-creds:[[
- {t:"Basic eligibility (varies by agency)",d:"Often includes a minimum age, a diploma or GED, a driver's license, a background check, and a fitness test. Always check the agency's current posting."}],[
- {t:"Academy training",d:"Completed through the agency or state, and often required to be sworn in."},
- {t:"State certification",d:"Officers are typically certified under state training standards. The agency guides you."},
- {t:"Specialty training",d:"Roles like detective or K-9 add more training later."}]],
-req:[["High school diploma","Stay on track: attendance and passing core classes."],["Report writing","English assignments are report practice."],["Community trust","Group projects and community service."],["Fitness test","Build a gym or sports habit."],["Background check","Think before you post; ask a counselor if you have questions."]],
-plan:{
- 9:[["Course","Stay on track in English and core classes"],["Try it","Join a team, club, or youth program"],["Try it","Build a simple fitness routine"],["Milestone","Finish 9th grade with all your credits"]],
- 10:[["Course","Take a writing-heavy class and work on speaking"],["Try it","Volunteer in your community"],["Try it","Talk to someone in public safety"],["Milestone","Learn the age and requirements of local agencies"]],
- 11:[["Course","Dual enrollment in criminal justice if offered"],["Try it","Interview an officer or dispatcher"],["Try it","Keep up your fitness routine"],["Milestone","Compare routes: academy, college, or related roles"]],
- 12:[["Milestone","Apply to college or prepare for hiring"],["Milestone","Fill out financial aid forms"],["Try it","Attend a hiring or career event"],["Milestone","Graduate on time"]]},
-actions:{a:[
- {t:"Go to every class this week",why:"Reliability is a core part of the job.",skill:"show_up"},
- {t:"Write a clear, factual paragraph about your week",why:"Reports need facts, not opinions.",skill:"think"},
- {t:"Do a group task and listen first",why:"Community trust starts with listening.",skill:"communicate"},
- {t:"Move your body 3 times this week",why:"Fitness tests reward steady habits.",skill:"experience"},
- {t:"Look up your local agency's minimum age",why:"Know the real requirements early.",skill:"prepare"}],
- b:[
- {t:"Interview a public safety worker",why:"Learn the real day-to-day.",skill:"communicate"},
- {t:"Compare academy, college, and related roles",why:"Multiple routes mean better choices.",skill:"prepare"},
- {t:"Volunteer a few hours",why:"Service builds trust and experience.",skill:"experience"},
- {t:"Keep your attendance strong",why:"Diploma first, always.",skill:"show_up"},
- {t:"Practice a calm conversation with a classmate",why:"De-escalation is a skill.",skill:"communicate"}]},
-quiz:{title:"Write the report",q:"Which sentence is the clearest, most factual report line?",opts:["The guy looked suspicious and was acting crazy.","A man in a red jacket stood by the door for 10 minutes and looked at each car.","He was obviously up to no good."],ans:1,why:"Good reports describe what you can observe: who, what, where, how long. Not opinions.",skill:"think"},
-scn:{title:"The upset kid",q:"You're a cadet at a community event. A kid is upset and shouting. What do you do?",skill:"communicate",opts:[
- {t:"Stay calm, crouch down, and ask what's wrong",good:true,fb:"Calm and curious usually lowers the temperature. That's de-escalation."},
- {t:"Tell them loudly to be quiet",good:false,fb:"Raising your voice often escalates things."},
- {t:"Walk away",good:false,fb:"Ignoring a person in distress doesn't build trust."}]}
-},
-nurse:{id:"nurse",emoji:"🩺",title:"Nurse",pitch:"Care for people when they need it",
-kw:["nurse","nursing","doctor","health","hospital","medical","care","cna","patient"],
-routes:[
- {name:"Nursing assistant (CNA) first",tag:"Fastest way in",time:"CNA training is often short (weeks to months; varies)",cost:"Lower",fit:"You want patient experience quickly while you study.",hard:"Physical, emotional work with modest starting pay.",
-  nodes:[DIPLOMA,{e:"📋",t:"CNA training and exam",d:"Complete a state-approved program, then pass the certification exam.",src:"Source: state board of nursing"},{e:"🏥",t:"Work as a CNA",d:"Gain patient care experience. Some employers help with tuition.",src:"Source: employer job posts"},{e:"🎓",t:"Continue to LPN or RN",d:"Your experience supports applications to nursing programs.",src:"Source: community college program pages"}]},
- {name:"Associate degree in nursing (RN)",tag:"Common route to RN",time:"About 2 years of nursing study (plus prerequisites)",cost:"Lower than most four-year degrees",fit:"You want to become an RN at a community college.",hard:"Competitive programs, with prerequisites like biology.",
-  nodes:[DIPLOMA,{e:"🧪",t:"Prerequisite courses",d:"Often biology and anatomy. Strong grades help.",src:"Source: community college program page"},{e:"🏫",t:"Nursing program (ADN)",d:"Classes plus supervised clinical practice.",src:"Source: community college program page"},{e:"📜",t:"Pass the NCLEX-RN and get licensed",d:"A licensing exam, with licenses issued by the state board of nursing.",src:"Source: state board of nursing"},{e:"🩺",t:"RN job",d:"Work in hospitals, clinics, and schools.",src:"Source: U.S. Bureau of Labor Statistics"}]},
- {name:"Bachelor's in nursing (BSN)",tag:"Most options",time:"About 4 years",cost:"Higher",fit:"You're interested in leadership, public health, or advanced practice later.",hard:"Takes longer and costs more.",
-  nodes:[DIPLOMA,{e:"🏛️",t:"BSN program",d:"Four-year degree with clinical practice.",src:"Source: college program pages"},{e:"📜",t:"NCLEX-RN and license",d:"Required to practice as an RN.",src:"Source: state board of nursing"},{e:"🩺",t:"RN or leadership roles",d:"A BSN can open more roles over time.",src:"Source: employer job posts"}]}
-],
-ladder:[{t:"Nursing assistant",n:4495,g:"+3.5%",hs:36.5},{t:"Licensed practical nurse (LPN)",n:1544,g:"+4.3%",hs:20.2},{t:"Registered nurse (RN)",n:7567,g:"+3.0%",hs:1.3}],
-credLabels:["To train","To work as a nurse"],
-creds:[[
- {t:"CPR / BLS certification",d:"Often required before clinical programs."},
- {t:"CNA certification",d:"State-approved training plus an exam."}],[
- {t:"RN license (NCLEX-RN)",d:"Passing the exam and getting licensed by the state board of nursing."},
- {t:"LPN license (NCLEX-PN)",d:"A shorter route to nursing with a different license."}]],
-req:[["High school diploma","Stay on track: attendance and passing core classes."],["Biology","Take biology and learn how the body works."],["Dosage-style math","Be solid with ratios and decimals."],["Caring communication","Volunteer and practice listening."],["Competitive programs","Keep grades strong."]],
-plan:{
- 9:[["Course","Stay on track in science and math"],["Try it","Join a health or service club"],["Try it","Learn basic first aid"],["Milestone","Finish 9th grade with all your credits"]],
- 10:[["Course","Take biology"],["Try it","Volunteer in a caring setting"],["Try it","Talk to a nurse"],["Milestone","Learn the difference between CNA, LPN, and RN"]],
- 11:[["Course","Chemistry or anatomy if offered"],["Credential","CPR or first aid certification"],["Try it","Job shadow or volunteer"],["Milestone","Compare nursing programs and prerequisites"]],
- 12:[["Milestone","Apply to CNA or nursing programs"],["Milestone","Fill out financial aid forms"],["Try it","Keep grades strong for admissions"],["Milestone","Graduate on time"]]},
-actions:{a:[
- {t:"Go to every class this week",why:"Clinical work depends on reliability.",skill:"show_up"},
- {t:"Finish every science assignment",why:"Biology is the base of nursing.",skill:"think"},
- {t:"Practice listening to a friend without interrupting",why:"Caring starts with listening.",skill:"communicate"},
- {t:"Learn 3 first-aid basics",why:"A small taste of the work.",skill:"experience"},
- {t:"Read about CNA, LPN, and RN",why:"Several routes lead in.",skill:"prepare"}],
- b:[
- {t:"Talk to a nurse about their path",why:"Hear what the work is like.",skill:"communicate"},
- {t:"Compare two nursing programs",why:"Prerequisites differ.",skill:"prepare"},
- {t:"Volunteer or shadow a few hours",why:"Experience helps you decide.",skill:"experience"},
- {t:"Keep your grades strong",why:"Programs can be competitive.",skill:"show_up"},
- {t:"Review ratio and decimal math",why:"Safe care depends on careful math.",skill:"think"}]},
-quiz:{title:"Rounds math",q:"A nurse checks 6 patients every 2 hours during an 8-hour shift. How many checks in total?",opts:["12","24","48"],ans:1,why:"8 ÷ 2 = 4 rounds. 4 × 6 patients = 24 checks.",skill:"think"},
-scn:{title:"I don't know the answer",q:"You're a nursing assistant and a patient asks a medical question you can't answer. What do you do?",skill:"communicate",opts:[
- {t:"Say \"Let me check with the nurse\" and follow up",good:true,fb:"Knowing your limits keeps patients safe. Asking is a strength."},
- {t:"Make up an answer",good:false,fb:"Guessing about health can hurt someone."},
- {t:"Change the subject",good:false,fb:"The patient still needs an answer. Follow up."}]}
-},
 it:{id:"it",emoji:"💻",title:"IT support specialist",pitch:"Fix tech problems and help people",
 kw:["computer","laptop","tech","troubleshoot","help desk","it support","cyber","network","wifi","wi-fi"],
 routes:[
@@ -262,7 +128,12 @@ routes:[
   nodes:[DIPLOMA,
    {e:"🏛️",t:"Bachelor's in IT or information systems",d:"Degrees in IT, information systems, or computer science connect to many tech roles. You can also start at a community college and transfer.",src:"Source: college program pages"},
    {e:"🔐",t:"Systems, security, or analyst role",d:"BLS lists a bachelor's degree as the typical entry education for roles like systems administrator and information security analyst.",src:"Source: U.S. Bureau of Labor Statistics"},
-   {e:"👩‍💻",t:"Specialize or lead",d:"More education and experience can open leadership and research roles.",src:"Source: industry pathways"}]}
+   {e:"👩‍💻",t:"Specialize or lead",d:"More education and experience can open leadership and research roles.",src:"Source: industry pathways"}]},
+ {name:"Start in tech support",tag:"Learn on the job",time:"Starts during or right after high school; varies",cost:"Low",fit:"You like fixing things and want hands-on experience, sometimes before more school.",hard:"Entry roles can be competitive and pay may start modest. Credentials and more training still help over time.",
+  nodes:[DIPLOMA,
+   {e:"🔧",t:"Build hands-on skills",d:"Join a school repair or tech club, fix devices for family or school (with an adult's OK), or take an electronics course.",src:"Source: school and community programs"},
+   {e:"🛠️",t:"Start in IT or technical support",d:"Entry roles include IT support and technical support. BLS says some people qualify with a high school diploma plus IT certifications.",src:"Source: U.S. Bureau of Labor Statistics, Occupational Outlook Handbook"},
+   {e:"📈",t:"Grow into admin or network roles",d:"With experience, people move toward roles like junior systems administrator or network technician.",src:"Source: employer job posts; BLS"}]}
 ],
 ladderTitle:"📈 The IT ladder · U.S. median pay, May 2025",
 ladder:[{t:"Computer user support specialist",pay:61860,edu:"Some college courses typical. A diploma plus IT certifications may qualify."},{t:"Computer network support specialist",pay:76220,edu:"Associate degree typical"},{t:"Network and computer systems administrator",pay:99130,edu:"Bachelor's degree typical"}],
@@ -305,28 +176,21 @@ const JOBS=[
  {t:"Stocker / order filler",n:7614,hs:43.7},
  {t:"Hand laborer / material mover",n:7376,hs:46.1},
  {t:"Building cleaner (janitor)",n:4797,hs:44.5},
- {t:"Nursing assistant",n:4495,hs:36.5,path:"nurse"},
  {t:"Heavy truck driver",n:3481,hs:46.5}];
 
 /* Sample alumni stories: FICTIONAL, for demo only. Real version = opt-in alumni + published profiles. */
 const STORIES={
-baker:[
- {id:"b1",name:"Jordan R.",em:"🧑‍🍳",cls:"Class of 2019",sameSchool:true,route:0,start:"Was struggling in math in 9th grade",steps:["Diploma","Baking certificate","Pastry assistant","Own bakery"],quote:"I wasn't sure college was for me. The certificate was.",tip:"Get your food handler card early. It got me my first job."},
- {id:"b2",name:"Aaliyah T.",em:"👩‍🍳",cls:"Class of 2017",sameSchool:false,route:1,start:"Needed income right after graduating",steps:["Diploma","Bakery counter","Trained under head baker","Lead baker"],quote:"I learned the craft by showing up early and asking questions.",tip:"Say yes to the early shifts. That's where you learn."},
- {id:"b3",name:"Marcus W.",em:"🧑‍🔬",cls:"Class of 2015",sameSchool:true,route:2,start:"Loved the science of baking",steps:["Diploma","Food science degree","Product developer","Side bakery"],quote:"Chemistry class made baking make sense.",tip:"Apply for scholarships in your senior year."}],
-police:[
- {id:"p1",name:"Devon C.",em:"👮",cls:"Class of 2018",sameSchool:true,route:1,start:"First in the family to go to college",steps:["Diploma","Criminal justice AA","Academy","Patrol officer"],quote:"College credits gave me time to grow up before the academy.",tip:"Stay active. The fitness test comes fast."},
- {id:"p2",name:"Priya S.",em:"🎧",cls:"Class of 2016",sameSchool:false,route:3,start:"Wanted to help but not on patrol",steps:["Diploma","911 training","Dispatcher","Shift supervisor"],quote:"I help people on the worst day of their lives.",tip:"Practice staying calm on the phone."}],
-nurse:[
- {id:"n1",name:"Tasha M.",em:"👩‍⚕️",cls:"Class of 2018",sameSchool:true,route:0,start:"Needed to earn while studying",steps:["Diploma","CNA certificate","Worked as CNA","RN (associate)"],quote:"Being a CNA first showed me I really wanted this.",tip:"Volunteer early. It makes applications stronger."},
- {id:"n2",name:"Luis G.",em:"🧑‍⚕️",cls:"Class of 2014",sameSchool:false,route:2,start:"Strong in science",steps:["Diploma","BSN program","RN","Charge nurse"],quote:"I picked the four-year route for more options later.",tip:"Keep your science grades strong."}],
 it:[
- {id:"i1",name:"Ling",em:"👩‍💻",cls:"Community college, then UMBC",real:true,sameSchool:false,route:0,start:"Started at community college",steps:["Community college","Transfer to UMBC","Desktop support + bachelor's","PhD student"],ask:"What did you do first?"},
- {id:"i2",name:"Devin K.",em:"🧑‍💻",cls:"Class of 2019",sameSchool:true,route:1,start:"Wanted job training right after graduating",steps:["Diploma","Free IT training","Help desk job","Systems technician"],quote:"I didn't know training like this existed until a counselor told me.",tip:"Ask your counselor about training programs early."}]};
+ {id:"i1",name:"Ling",em:"👩‍💻",cls:"Community college, then UMBC",real:true,sameSchool:false,route:0,sp:true,start:"Enjoyed helping people fix computers",steps:["Community college","Desktop support job","Transfer to UMBC","PhD student"],ask:"What did you do in 9th grade to stay on track?"},
+  {id:"i3",name:"Luna M.",em:"🧑‍💻",cls:"Class of 2021",sameSchool:true,route:0,sp:true,start:"Enjoyed fixing computers",steps:["Community college","CompTIA A+ certification","Full-time IT specialist"],quote:"The certification got me my first IT job.",ask:"What did you do in 9th grade to stay on track?"},
+  {id:"i4",name:"Andre B.",em:"🧑🏾‍🔧",cls:"Class of 2020",sameSchool:false,route:3,sp:true,start:"Enjoyed fixing computers",steps:["Repair club","Electronics course","Repair technician"],tip:"Fix a game controller or a phone first. Small repairs build real confidence."},
+  {id:"i5",name:"Nia S.",em:"👩🏽‍💻",cls:"Class of 2019",sameSchool:false,route:3,sp:true,start:"Enjoyed fixing computers",steps:["Helped friends set up devices","Started in IT support","Managed accounts, devices, servers","Junior systems admin"],tip:"Keep notes on every fix you make. They become your first resume."},
+  {id:"i6",name:"Omar H.",em:"👨🏻‍💻",cls:"Class of 2018",sameSchool:false,route:3,sp:true,start:"Enjoyed fixing computers",steps:["Summer IT internship","Started in technical support","Network troubleshooting","Network technician"],tip:"Ask your counselor about summer IT internships in 10th or 11th grade."},
+  {id:"i2",name:"Devin K.",em:"🧑🏿‍💻",cls:"Class of 2019",sameSchool:true,route:1,start:"Wanted job training right after graduating",steps:["Diploma","Free IT training","Help desk job","Systems technician"],quote:"I didn't know training like this existed until a counselor told me.",tip:"Ask your counselor about training programs early."}]};
 
 /* ===== Apply Dashboard data (typical timelines; confirm with each school/program/employer) ===== */
 const TRACKS={uni:"4-year college",cc:"Community college / certificate",job:"Job or training program"};
-const TRACK_MAP={baker:["cc","job","uni"],police:["job","cc","uni","job"],nurse:["job","cc","uni"],it:["cc","job","uni"]};
+const TRACK_MAP={it:["cc","job","uni","job"]};
 const GROUPS=["Now (9th–10th grade)","Junior year","Summer before senior year","Senior fall (Sep–Dec)","Senior winter–spring (Jan–May)","Enrollment / start"];
 const APPLY={
 uni:{portals:["Common App","FAFSA","School portals"],deadlines:[["Early application deadlines",11,1,-1],["Regular application deadlines",1,15,0],["Commit and enroll",5,1,0]],items:[
@@ -352,7 +216,7 @@ job:{portals:["Job board account","Training program portal","Resume saved"],dead
  ["Complete onboarding paperwork","Plan your first 90 days: what you'll learn","Set a next-step goal (certificate or promotion)"]]}};
 const CATS=[["Leadership",/(captain|president|leader|council|jrotc|robotics|debate|club)/i],["Work",/(job|cashier|shift|employ|intern|paid|restaurant|store|work)/i],["Family responsibility",/(sibling|babysit|caregiv|care for|grandm|grandp|family|translat)/i],["Service",/(volunteer|community|church|food bank|service|mentor|tutor)/i],["Arts",/(band|choir|music|art|draw|paint|theater|dance|drum|bak(e|ing)|cook)/i],["Sports",/(team|soccer|basketball|football|track|swim|baseball|volleyball|gym|sport)/i],["Academic",/(honor|class|science|math|research|summer program)/i]];
 
-const INTERESTS=[["🍰 Making & food","baker"],["🩺 Helping people heal","nurse"],["🛡️ Protecting my community","police"],["💻 Fixing tech","it"]];
+const INTERESTS=[["💻 Fixing tech","it"]];
 const BLOCK={time:"Pick the smallest action and do just that one.",motivation:"Look at your Path Map and remember your why. Even one step counts.",transport:"Choose actions you can do at school or at home.",how:"Ask your counselor or a teacher to walk you through it.",other:"Tell a counselor or a trusted adult. You don't have to solve it alone."};
 
 /* ===== Check-in questions (friendly warm-up, not a graded test). Keyed by the grade whose skills they cover. ===== */
@@ -399,6 +263,7 @@ const MONTHS={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,sept:8,oct:9
 function fresh(){return {xseg:"route",seen:{},tdone:{},xpGiven:{},planAll:{},toolsOpen:null,track:null,portals:{},progs:{dream:[],fit:[],backup:[]},actsText:"",actsOut:null,school:"",pfilter:"all",saved:{},screen:"welcome",tab:"today",name:"",grade:9,interests:[],path:null,route:0,xp:{show_up:0,think:0,communicate:0,experience:0,prepare:0},done:{},qDone:{},week:0,reflect:null,letter:"",planGrade:9,sparkMsg:"",pview:"soon",events:[],cards:[],chk:null,sylText:"",clsName:""};}
 let S;try{S=Object.assign(fresh(),JSON.parse(localStorage.getItem("slm")||"{}"));}catch(e){S=fresh();}
 if(S.tab==="path")S.tab="explore";else if(["week","quest"].includes(S.tab))S.tab="today";else if(!["today","explore","plan","school","me"].includes(S.tab))S.tab="today";
+if(S.path&&!PATHS[S.path]){S.path=null;S.route=0;S.track=null;}
 if(S.planGrade<9||S.planGrade>13)S.planGrade=S.grade;
 function save(){try{localStorage.setItem("slm",JSON.stringify(S));}catch(e){}}
 let Q=null; // active quest (not saved)
@@ -529,13 +394,12 @@ function vSpark(){const sug=S.interests;return header()+`<main>
 ${S.sparkMsg?`<div class="fb ok">${esc(S.sparkMsg)}</div>`:""}
 <h2>Or start from an idea</h2>
 ${Object.values(PATHS).map(p=>`<div class="card pcard ${sug.includes(p.id)?"sel":""}" data-a="pick" data-v="${p.id}"><div class="em">${p.emoji}</div><div><b>${p.title}${sug.includes(p.id)?'<span class="badge">For you</span>':""}</b><small>${p.pitch}</small></div></div>`).join("")}
-<button class="btn alt" data-a="surprise">🎲 Surprise me</button>
 <details style="margin-top:14px"><summary>📊 Curious about jobs near you? (Baltimore County data)</summary>
 <p class="sub">Real jobs in Baltimore County. Tap one to see the ladder up.</p>
 ${JOBS.map((j,i)=>`<div class="card" data-a="job" data-v="${i}" style="cursor:pointer"><div style="display:flex;justify-content:space-between;gap:8px"><b style="color:var(--navy)">${j.t}</b><span class="why" style="margin:0;white-space:nowrap">${j.n.toLocaleString()} jobs</span></div><div class="pb"><i style="width:${j.n/10732*100}%"></i></div><div class="why" style="margin:0">${j.hs}% of U.S. workers in this job have a high school diploma as their highest education${j.path?' · <b style="color:var(--teal)">Ladder ready →</b>':""}</div></div>`).join("")}
 <div class="src">Sources: Baltimore County 2025 Q2 Economic Indicators (Lightcast, 2024 jobs); U.S. Bureau of Labor Statistics (2023–24).</div>
 </details>
-<p class="demo">This demo has 4 sample paths.</p>
+<p class="demo">This demo has one sample path: IT support.</p>
 </main>`;}
 
 /* ---------- Journey strip (the 5 steps) ---------- */
@@ -605,20 +469,20 @@ ${[0,1].map(g=>`<div class="why" style="font-weight:700;color:var(--navy);margin
 <p class="demo">Sample ranges, not verified numbers. Rules change and vary by place. Always confirm with the official agency or school.</p>`;}
 
 function peopleBody(){const all=STORIES[S.path];const f=S.pfilter;const sch=S.school||"Your high school";
- const list=all.filter(x=>f==="all"||(f==="school"&&x.sameSchool)||(f==="route"&&x.route===S.route));
+ const score=x=>(x.sameSchool?1:0)+(x.route===S.route?1:0)+(x.sp?1:0);
+ const list=all.filter(x=>f==="all"||(f==="school"&&x.sameSchool)||(f==="route"&&x.route===S.route)).map((x,i)=>[x,i]).sort((a,b)=>score(b[0])-score(a[0])||a[1]-b[1]).map(a=>a[0]);
  const flt=[["all","Everyone"],["school","Same school"],["route","My route"]];
  return `<div class="why" style="margin:6px 0 2px;font-weight:700;color:var(--teal)">STEP 2 · PEOPLE WHO DID IT</div>
 <p class="sub">Journeys from people who started where you are. Match by school, route, and starting point.</p>
 <div class="chips">${flt.map(x=>`<button class="chip ${f===x[0]?"on":""}" data-a="pf" data-v="${x[0]}">${x[1]}</button>`).join("")}</div>
 ${list.length?list.map(x=>`<div class="card"><div class="row"><div style="font-size:40px;line-height:1">${x.em}</div><div><b style="font-size:18px;color:var(--navy)">${x.name}</b><div class="why" style="margin:0">${x.cls}${x.sameSchool?" · "+esc(sch):""}</div></div></div>
-<div style="margin:8px 0 4px">${x.sameSchool?'<span class="badge" style="margin:0 6px 0 0">Same school</span>':""}${x.route===S.route?'<span class="badge" style="margin:0 6px 0 0;background:var(--teal);color:#fff">Your route</span>':""}${x.real?'<span class="badge" style="margin:0;background:#2E7D32;color:#fff">Real story</span>':'<span class="badge" style="margin:0;background:#E3E3E3;color:#555">Sample story</span>'}</div>
-<div class="why"><b>Starting point:</b> ${x.start}</div>
+<div style="margin:8px 0 4px"><span class="badge" style="margin:0 6px 0 0;background:#14213D;color:#fff">${score(x)} of 3 match</span>${x.sp?'<span class="badge" style="margin:0 6px 0 0;background:#F4C9C9">Same starting point</span>':""}${x.sameSchool?'<span class="badge" style="margin:0 6px 0 0">Same school</span>':""}${x.route===S.route?'<span class="badge" style="margin:0 6px 0 0;background:var(--teal);color:#fff">Your route</span>':""}</div>
 <div style="margin:8px 0">${x.steps.map((st,i)=>(i?'<span style="color:var(--gold);font-weight:800"> → </span>':"")+`<span class="stp">${st}</span>`).join("")}</div>
 ${x.quote?`<div class="fb good" style="color:var(--ink)">“${x.quote}”</div>`:""}
 ${x.tip?`<div class="why">💡 <b>Tip:</b> ${x.tip}</div>`:""}
 ${x.ask?`<div class="fb good" style="color:var(--ink)">💬 <b>Ask me:</b> “${x.ask}”</div>`:""}
 <div style="display:flex;gap:8px"><button class="btn alt" style="margin-top:10px" data-a="ask" data-v="${x.id}">💬 Ask ${x.name.split(" ")[0]}</button><button class="btn alt" style="margin-top:10px;width:auto;padding:14px 18px" data-a="save" data-v="${x.id}">${S.saved[x.id]?"💛":"🤍"}</button></div></div>`).join(""):`<div class="card soft">No matches yet for this filter. Try Everyone.</div>`}
-<p class="demo">Stories marked Sample are fictional examples. Alumni opt in to share, and intros go through a counselor.</p>`;}
+`;}
 
 /* ---------- STEP 4 · PLAN (near-term first: what is due, in order) ---------- */
 function vPlan(){markSeen("plan");const tk=curTrack(),A=APPLY[tk];const g=S.planGrade||S.grade;
@@ -736,7 +600,6 @@ document.addEventListener("click",e=>{
   case "goalgo":{const t=document.getElementById("goal").value;const m=matchPath(t);if(m){choose(m);}else{S.sparkMsg=t.trim()?"I don't have a sample path for that yet. Try one below.":"Type something you're curious about, or tap a path below.";save();render();}break;}
   case "pick":choose(v);break;
   case "job":{const j=JOBS[+v];if(j.path)choose(j.path);else toast("Ladder for this job is coming soon (demo)");break;}
-  case "surprise":{const ids=Object.keys(PATHS);choose(ids[Math.floor(Math.random()*ids.length)]);toast("🎲 Surprise! Take a look.");break;}
   case "tab":S.tab=v;Q=null;save();draw(true);break;
   case "jstep":{const [t,s]=v.split(":");S.tab=t;if(s)S.xseg=s;Q=null;save();draw(true);break;}
   case "xseg":S.xseg=v;save();draw(true);break;
